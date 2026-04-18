@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MCP Guide</title>
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+
+  <header id="header">
+    <h1>MCP Guide</h1>
+    <button id="theme-toggle">테마</button>
+  </header>
+
+  <div id="layout">
+    <aside id="sidebar">
+      <section id="sidebar-placement">
+        <h2>카테고리</h2>
+        <!-- 배치 카테고리 체크박스 — main.js가 동적 생성 -->
+      </section>
+      <hr>
+      <section id="sidebar-search">
+        <h2>검색 카테고리</h2>
+        <!-- features 기반 가상뷰 태그 — main.js가 동적 생성 -->
+      </section>
+    </aside>
+
+    <main id="card-grid">
+      <!-- MCP 카드 — main.js + card.js가 mcp.json 기반 동적 생성 -->
+    </main>
+  </div>
+
+  <script src="scripts/card.js"></script>
+  <script src="scripts/main.js"></script>
+</body>
+</html>
