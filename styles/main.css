@@ -34,12 +34,12 @@
   --badge-cat-text: #bdb2ff;
 
   /* api_key */
-  --badge-api-required-bg: rgba(255, 149, 0, 0.18);
-  --badge-api-required-text: #ffb259;
-  --badge-api-optional-bg: rgba(255, 221, 87, 0.18);
-  --badge-api-optional-text: #ffe07a;
-  --badge-api-none-bg: rgba(255, 255, 255, 0.08);
-  --badge-api-none-text: #d0d0d0;
+  --badge-api-required-bg: rgba(255, 149, 0, 0.28);
+  --badge-api-required-text: #ffc888;
+  --badge-api-optional-bg: rgba(255, 221, 87, 0.28);
+  --badge-api-optional-text: #ffe98f;
+  --badge-api-none-bg: rgba(110, 200, 140, 0.24);
+  --badge-api-none-text: #9bdfb3;
 
   /* operation_type 7분류 */
   --badge-op-information-bg:    rgba(90, 160, 255, 0.18);
@@ -82,12 +82,12 @@
   --badge-cat-bg: rgba(91, 79, 233, 0.15);
   --badge-cat-text: #4a3ed4;
 
-  --badge-api-required-bg: rgba(230, 130, 0, 0.15);
-  --badge-api-required-text: #b85e00;
-  --badge-api-optional-bg: rgba(200, 160, 0, 0.18);
-  --badge-api-optional-text: #8a6a00;
-  --badge-api-none-bg: rgba(0, 0, 0, 0.06);
-  --badge-api-none-text: #4a4a4a;
+  --badge-api-required-bg: rgba(230, 130, 0, 0.22);
+  --badge-api-required-text: #a35200;
+  --badge-api-optional-bg: rgba(200, 160, 0, 0.25);
+  --badge-api-optional-text: #7a5e00;
+  --badge-api-none-bg: rgba(40, 160, 90, 0.20);
+  --badge-api-none-text: #1e7a42;
 
   --badge-op-information-bg:    rgba(60, 130, 230, 0.15);
   --badge-op-information-text:  #2b6dc8;
@@ -410,12 +410,19 @@ a { color: inherit; }
 .badge {
   display: inline-flex;
   align-items: center;
-  padding: 2px 9px;
-  font-size: 11.5px;
+  padding: 3px 11px;
+  font-size: 12.5px;
   font-weight: 500;
   line-height: 1.6;
   border-radius: 999px;
   white-space: nowrap;
+}
+
+/* 제목 옆 api_key 배지는 조금 더 뚜렷하게 */
+.card-title-right .badge-api {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 4px 12px;
 }
 
 .badge-category {
@@ -437,26 +444,25 @@ a { color: inherit; }
 .badge-op-infrastructure { background: var(--badge-op-infrastructure-bg); color: var(--badge-op-infrastructure-text); }
 .badge-op-ai-assist      { background: var(--badge-op-ai-assist-bg);      color: var(--badge-op-ai-assist-text); }
 
-/* 바로가기 버튼 */
+/* 바로가기 버튼 — 제목 옆에서 눈에 띄도록 accent 색 기본, hover 시 반전 */
 .website-btn {
   display: inline-flex;
   align-items: center;
-  padding: 4px 12px;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-primary);
-  background: transparent;
-  border: 1px solid var(--border);
+  padding: 5px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent-text);
+  background: var(--accent);
+  border: 1px solid var(--accent);
   border-radius: 6px;
   text-decoration: none;
-  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  transition: filter 0.15s, transform 0.15s;
   white-space: nowrap;
 }
 
 .website-btn:hover {
-  background: var(--accent);
-  color: var(--accent-text);
-  border-color: var(--accent);
+  filter: brightness(1.15);
+  transform: translateY(-1px);
 }
 
 /* ── Card Body (펼침 영역) ───────────────────────── */
