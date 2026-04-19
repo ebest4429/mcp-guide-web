@@ -1,201 +1,311 @@
-// card.js — MCP 카드 렌더 라이브러리
+// card.js — MCP 카드 렌더 라이브러리 (Phase 2 전면 재작성)
 //
 // 취지:
-// - MCP 객체 1개 → HTML Element 1개. 모든 카드는 이 함수 하나로 생성.
-// - 선택 필드(dashboard, api_docs, github, features)는 값이 있을 때만 요소 생성.
-//   공백·N/A·placeholder 표시 절대 금지 (설계도 "빈 필드 요소 미생성" 원칙).
-// - 코드블록이 없는 탭은 탭 자체 미생성 — mcp.json content에 섹션이 없거나
-//   ```json 블록이 비어있으면 해당 클라이언트 탭은 제외.
+// - 설계도 "카드 구조(전체 아코디언)" 준수.
+//   접힘: 배지 행 + 제목 행(제목·api_key 배지·바로가기) + description + feature 태그
+//   펼침: 본문 4섹션(## 소개/주요 기능/사용법/기타) + 필드 구획 + 클라이언트 탭 + 코드블록
+// - MCP 객체 1개 → 카드 엘리먼트 1개. 모든 카드는 renderCard 하나로 생성.
+// - 빈 필드 요소 미생성 원칙:
+//     docs/dashboard/api_docs/github·feature·탭·본문 섹션은 값 있을 때만 생성.
+//     공백·N/A·placeholder 렌더 금지.
+// - status 필드 폐기(2026-04-19) — 참조 코드 없음.
+// - operation_type / api_key 배지는 영문(한글) 병기.
+// - category 배지는 YAML 값이 이미 한글이므로 그대로 표시.
+// - exclusive 아코디언 — 한 카드 열면 다른 열린 카드 닫힘.
+
+// ── 매핑 ──────────────────────────────────────────
+
+// operation_type 영문 키 → 한글
+const OP_TYPE_LABEL = {
+  'information':    '단순정보제공',
+  'docs':           '문서연결',
+  'command':        '단방향지시',
+  'collaboration':  '양방향협업',
+  'generation':     '콘텐츠생성',
+  'infrastructure': '인프라제어',
+  'ai-assist':      'AI추론보조',
+};
+
+// api_key 영문 → 한글
+const API_KEY_LABEL = {
+  'required': '유료·키필요',
+  'optional': '키선택',
+  'none':     '무료',
+};
+
+// supported_clients 값 → content 섹션 헤딩 + 탭 라벨
+// antigravity / vscode 추가 (2026-04-19 설계도 확정)
+const CLIENT_SECTION_MAP = {
+  'claude-cli':     { heading: 'Claude CLI 설정',     label: 'Claude CLI' },
+  'claude-desktop': { heading: 'Claude Desktop 설정', label: 'Claude Desktop' },
+  'codex':          { heading: 'Codex 설정',          label: 'Codex' },
+  'gemini-cli':     { heading: 'Gemini CLI 설정',     label: 'Gemini CLI' },
+  'antigravity':    { heading: 'antigravity 설정',    label: 'Antigravity' },
+  'vscode':         { heading: 'VSCode 설정',         label: 'VSCode' },
+};
+
+// 필드 구획 정의 (순서 고정, 값 있을 때만 렌더)
+// 메모 필드는 2026-04-19 폐기 — 특이사항은 본문 `## 기타`에서 설명
+const FIELD_DEFS = [
+  { key: 'docs',      label: '공식 문서' },
+  { key: 'dashboard', label: '대시보드' },
+  { key: 'api_docs',  label: 'API 발급' },
+  { key: 'github',    label: 'GitHub' },
+];
+
+// 본문 섹션 정의 (순서 고정, 섹션 없으면 미생성)
+const BODY_SECTION_DEFS = [
+  { heading: '소개',      className: 'body-intro' },
+  { heading: '주요 기능', className: 'body-features' },
+  { heading: '사용법',    className: 'body-usage' },
+  { heading: '기타',      className: 'body-etc' },
+];
+
+// ── 엔트리 ────────────────────────────────────────
 
 /**
  * @param {Object} mcp - mcp.json의 MCP 객체
- * @returns {HTMLElement} 카드 엘리먼트
+ * @returns {HTMLElement} 카드 엘리먼트 (article)
  */
 function renderCard(mcp) {
   const card = document.createElement('article');
   card.className = 'mcp-card';
   card.dataset.name = mcp.name;
   card.dataset.category = mcp.category || '';
+  card.dataset.operationType = mcp.operation_type || '';
   card.dataset.features = (mcp.features || []).join(',');
 
-  card.appendChild(renderBadges(mcp));
-  card.appendChild(renderTitle(mcp));
-  card.appendChild(renderDesc(mcp));
+  const head = renderHead(mcp);
+  card.appendChild(head);
 
-  const links = renderLinks(mcp);
-  if (links) card.appendChild(links);
+  const body = renderBody(mcp);
+  if (body) card.appendChild(body);
 
-  const features = renderFeatures(mcp);
-  if (features) card.appendChild(features);
+  // 카드 head 클릭 = 토글. 내부 링크·버튼 클릭은 무시.
+  head.addEventListener('click', (e) => {
+    if (e.target.closest('a, button, .no-toggle')) return;
+    toggleCard(card);
+  });
 
-  const accordion = renderAccordion(mcp, card);
-  if (accordion.toggle) card.appendChild(accordion.toggle);
-  if (accordion.body) card.appendChild(accordion.body);
+  // 접근성
+  head.setAttribute('role', 'button');
+  head.setAttribute('tabindex', '0');
+  head.setAttribute('aria-expanded', 'false');
+  head.addEventListener('keydown', (e) => {
+    if (e.target.closest('a, button')) return;
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      toggleCard(card);
+    }
+  });
 
   return card;
 }
 
-// ── Badges ───────────────────────────────────────
-
-function renderBadges(mcp) {
-  const wrap = document.createElement('div');
-  wrap.className = 'card-badges';
-
-  if (mcp.category) {
-    wrap.appendChild(badge('badge badge-category', mcp.category));
+function toggleCard(card) {
+  const willOpen = !card.classList.contains('open');
+  if (willOpen) {
+    // exclusive — 다른 열린 카드 닫기
+    document.querySelectorAll('.mcp-card.open').forEach((c) => {
+      if (c !== card) {
+        c.classList.remove('open');
+        const h = c.querySelector('.card-head');
+        if (h) h.setAttribute('aria-expanded', 'false');
+      }
+    });
   }
-
-  if (mcp.api_key) {
-    const { cls, label } = apiKeyBadge(mcp.api_key);
-    wrap.appendChild(badge(cls, label));
-  }
-
-  if (mcp.operation_type) {
-    wrap.appendChild(badge('badge badge-op', mcp.operation_type));
-  }
-
-  if (mcp.status) {
-    const cls = `badge badge-status-${mcp.status}`;
-    wrap.appendChild(badge(cls, statusLabel(mcp.status)));
-  }
-
-  return wrap;
+  card.classList.toggle('open', willOpen);
+  const head = card.querySelector('.card-head');
+  if (head) head.setAttribute('aria-expanded', String(willOpen));
 }
 
-function badge(cls, text) {
+// ── Head (접힘 영역) ─────────────────────────────
+
+function renderHead(mcp) {
+  const head = document.createElement('header');
+  head.className = 'card-head';
+
+  // 1) 배지 행: 카테고리 + operation_type
+  const badgeRow = document.createElement('div');
+  badgeRow.className = 'card-badge-row';
+  if (mcp.category) {
+    badgeRow.appendChild(makeBadge('badge badge-category', mcp.category));
+  }
+  if (mcp.operation_type) {
+    const ko = OP_TYPE_LABEL[mcp.operation_type] || '';
+    const text = ko ? `${mcp.operation_type} (${ko})` : mcp.operation_type;
+    const cls = `badge badge-op badge-op-${mcp.operation_type}`;
+    badgeRow.appendChild(makeBadge(cls, text));
+  }
+  if (badgeRow.children.length) head.appendChild(badgeRow);
+
+  // 2) 제목 행: 제목 | (우측) api_key 배지 + 바로가기
+  const titleRow = document.createElement('div');
+  titleRow.className = 'card-title-row';
+
+  const title = document.createElement('h3');
+  title.className = 'card-title';
+  title.textContent = mcp.display_name || mcp.name;
+  titleRow.appendChild(title);
+
+  const right = document.createElement('div');
+  right.className = 'card-title-right';
+
+  if (mcp.api_key) {
+    const ko = API_KEY_LABEL[mcp.api_key] || '';
+    const text = ko ? `${mcp.api_key} (${ko})` : mcp.api_key;
+    const cls = `badge badge-api badge-api-${mcp.api_key}`;
+    right.appendChild(makeBadge(cls, text));
+  }
+  if (mcp.website) {
+    const a = document.createElement('a');
+    a.className = 'website-btn';
+    a.href = mcp.website;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.textContent = '바로가기 →';
+    right.appendChild(a);
+  }
+  if (right.children.length) titleRow.appendChild(right);
+
+  head.appendChild(titleRow);
+
+  // 3) description
+  if (mcp.description) {
+    const p = document.createElement('p');
+    p.className = 'card-desc';
+    p.textContent = mcp.description;
+    head.appendChild(p);
+  }
+
+  // 4) feature 태그
+  if (mcp.features && mcp.features.length) {
+    const wrap = document.createElement('div');
+    wrap.className = 'card-features';
+    for (const f of mcp.features) {
+      const tag = document.createElement('span');
+      tag.className = 'feature-tag';
+      tag.textContent = f;
+      wrap.appendChild(tag);
+    }
+    head.appendChild(wrap);
+  }
+
+  // 5) 아코디언 화살표 (접힘/펼침 시 CSS가 회전)
+  const arrow = document.createElement('span');
+  arrow.className = 'card-arrow';
+  arrow.textContent = '▼';
+  head.appendChild(arrow);
+
+  return head;
+}
+
+function makeBadge(cls, text) {
   const el = document.createElement('span');
   el.className = cls;
   el.textContent = text;
   return el;
 }
 
-function apiKeyBadge(value) {
-  if (value === 'required') return { cls: 'badge badge-api-required', label: '유료/키필요' };
-  if (value === 'optional') return { cls: 'badge badge-api-optional', label: '키선택' };
-  return { cls: 'badge badge-api-none', label: '무료' };
+// ── Body (펼침 영역) ─────────────────────────────
+
+function renderBody(mcp) {
+  const body = document.createElement('div');
+  body.className = 'card-body';
+
+  const content = mcp.content || '';
+
+  // 본문 4섹션 (섹션 없으면 미생성)
+  for (const def of BODY_SECTION_DEFS) {
+    const raw = extractSection(content, def.heading);
+    if (!raw) continue;
+    const sec = document.createElement('section');
+    sec.className = `body-section ${def.className}`;
+    const h = document.createElement('h4');
+    h.className = 'body-heading';
+    h.textContent = def.heading;
+    sec.appendChild(h);
+    renderMarkdownInto(sec, raw);
+    body.appendChild(sec);
+  }
+
+  // 필드 구획
+  const fields = renderFieldSections(mcp);
+  if (fields) body.appendChild(fields);
+
+  // 클라이언트 탭 + 코드블록
+  const clients = renderClientTabs(mcp, content);
+  if (clients) body.appendChild(clients);
+
+  if (!body.children.length) return null;
+  return body;
 }
 
-function statusLabel(value) {
-  if (value === 'verified') return 'verified';
-  if (value === 'needs-update') return 'needs-update';
-  return 'unverified';
-}
-
-// ── Title / Description ──────────────────────────
-
-function renderTitle(mcp) {
-  const h = document.createElement('h3');
-  h.className = 'card-title';
-  h.textContent = mcp.display_name || mcp.name;
-  return h;
-}
-
-function renderDesc(mcp) {
-  const p = document.createElement('p');
-  p.className = 'card-desc';
-  p.textContent = mcp.description || '';
-  return p;
-}
-
-// ── Links ────────────────────────────────────────
-
-function renderLinks(mcp) {
-  const links = [
-    { key: 'website',   label: '공식사이트' },
-    { key: 'dashboard', label: '대시보드' },
-    { key: 'api_docs',  label: 'API 발급' },
-    { key: 'github',    label: 'GitHub' },
-  ].filter(l => mcp[l.key]);
-
-  if (!links.length) return null;
+function renderFieldSections(mcp) {
+  const fields = FIELD_DEFS.filter((d) => mcp[d.key]);
+  if (!fields.length) return null;
 
   const wrap = document.createElement('div');
-  wrap.className = 'card-links';
-  for (const l of links) {
+  wrap.className = 'card-fields';
+
+  for (const f of fields) {
+    const sec = document.createElement('section');
+    sec.className = `field-section field-${f.key.replace('_', '-')}`;
+
+    const h = document.createElement('h4');
+    h.className = 'field-heading';
+    h.textContent = f.label;
+    sec.appendChild(h);
+
     const a = document.createElement('a');
-    a.className = 'link-btn';
-    a.href = mcp[l.key];
+    a.className = 'field-link';
+    a.href = mcp[f.key];
     a.target = '_blank';
     a.rel = 'noopener noreferrer';
-    a.textContent = l.label;
-    wrap.appendChild(a);
+    a.textContent = mcp[f.key];
+    sec.appendChild(a);
+
+    wrap.appendChild(sec);
   }
   return wrap;
 }
 
-// ── Features ─────────────────────────────────────
-
-function renderFeatures(mcp) {
-  if (!mcp.features || !mcp.features.length) return null;
-
-  const wrap = document.createElement('div');
-  wrap.className = 'card-features';
-  for (const f of mcp.features) {
-    const tag = document.createElement('span');
-    tag.className = 'feature-tag';
-    tag.textContent = f;
-    wrap.appendChild(tag);
-  }
-  return wrap;
-}
-
-// ── Accordion (Tabs + CodeBlocks) ────────────────
-
-// supported_clients 값 → content 마크다운 섹션 헤딩 + 탭 표시명
-const CLIENT_SECTION_MAP = {
-  'claude-cli':     { heading: 'Claude CLI 설정',     label: 'Claude CLI' },
-  'claude-desktop': { heading: 'Claude Desktop 설정', label: 'Claude Desktop' },
-  'codex':          { heading: 'Codex 설정',          label: 'Codex' },
-  'gemini-cli':     { heading: 'Gemini CLI 설정',     label: 'Gemini CLI' },
-};
-
-function renderAccordion(mcp, card) {
+function renderClientTabs(mcp, content) {
   const clients = mcp.supported_clients || [];
-  const content = mcp.content || '';
   const tabs = [];
 
   for (const client of clients) {
     const map = CLIENT_SECTION_MAP[client];
-    if (!map) {
-      // 매핑 없는 클라이언트 — 섹션 헤딩 규칙 모르므로 건너뜀.
-      // content에 해당 섹션이 있으면 그대로 쓰고 싶지만, 명세에 없는 클라이언트는
-      // 탭 자체를 생성하지 않는 쪽이 "빈 필드 요소 미생성" 원칙에 부합.
-      continue;
-    }
+    if (!map) continue;
     const code = extractFirstJsonBlock(content, map.heading);
-    if (!code) continue; // 코드블록 없으면 탭 미생성
+    if (!code) continue; // 코드블록 없으면 탭만 미생성 (카드는 유지)
     tabs.push({ id: client, label: map.label, code });
   }
 
-  if (!tabs.length) return { toggle: null, body: null };
+  if (!tabs.length) return null;
 
-  const toggle = document.createElement('button');
-  toggle.className = 'accordion-toggle';
-  toggle.type = 'button';
-  toggle.innerHTML = '설정 코드 <span class="arrow">▼</span>';
-
-  const body = document.createElement('div');
-  body.className = 'accordion-body';
-
-  const tabsWrap = document.createElement('div');
-  tabsWrap.className = 'tabs';
+  const wrap = document.createElement('div');
+  wrap.className = 'card-clients';
 
   const tabBar = document.createElement('div');
   tabBar.className = 'tab-bar';
 
-  const tabContents = [];
+  const panels = document.createElement('div');
+  panels.className = 'tab-panels';
+
+  const entries = [];
 
   tabs.forEach((t, i) => {
     const btn = document.createElement('button');
-    btn.className = 'tab-btn' + (i === 0 ? ' active' : '');
     btn.type = 'button';
+    btn.className = 'tab-btn no-toggle' + (i === 0 ? ' active' : '');
     btn.textContent = t.label;
     btn.dataset.tabId = t.id;
     tabBar.appendChild(btn);
 
-    const content = document.createElement('div');
-    content.className = 'tab-content' + (i === 0 ? ' active' : '');
-    content.dataset.tabId = t.id;
+    const panel = document.createElement('div');
+    panel.className = 'tab-panel' + (i === 0 ? ' active' : '');
+    panel.dataset.tabId = t.id;
 
     const codeWrap = document.createElement('div');
     codeWrap.className = 'code-wrap';
@@ -206,82 +316,161 @@ function renderAccordion(mcp, card) {
     codeEl.textContent = t.code;
     pre.appendChild(codeEl);
 
-    const copyBtn = document.createElement('button');
-    copyBtn.className = 'copy-btn';
-    copyBtn.type = 'button';
-    copyBtn.textContent = '복사';
-    copyBtn.addEventListener('click', () => copyToClipboard(t.code, copyBtn));
+    const copy = document.createElement('button');
+    copy.type = 'button';
+    copy.className = 'copy-btn no-toggle';
+    copy.textContent = '복사';
+    copy.addEventListener('click', (e) => {
+      e.stopPropagation();
+      copyToClipboard(t.code, copy);
+    });
 
     codeWrap.appendChild(pre);
-    codeWrap.appendChild(copyBtn);
-    content.appendChild(codeWrap);
+    codeWrap.appendChild(copy);
+    panel.appendChild(codeWrap);
+    panels.appendChild(panel);
 
-    tabsWrap.appendChild(content);
-    tabContents.push({ btn, content });
+    entries.push({ btn, panel });
   });
 
-  tabsWrap.prepend(tabBar);
-
-  // 탭 전환
   tabBar.addEventListener('click', (e) => {
     const btn = e.target.closest('.tab-btn');
     if (!btn) return;
+    e.stopPropagation();
     const id = btn.dataset.tabId;
-    for (const { btn: b, content: c } of tabContents) {
+    for (const { btn: b, panel: p } of entries) {
       const active = b.dataset.tabId === id;
       b.classList.toggle('active', active);
-      c.classList.toggle('active', active);
+      p.classList.toggle('active', active);
     }
   });
 
-  body.appendChild(tabsWrap);
-
-  // 아코디언 exclusive 토글
-  toggle.addEventListener('click', () => {
-    const willOpen = !card.classList.contains('open');
-    if (willOpen) {
-      document.querySelectorAll('.mcp-card.open').forEach(c => {
-        if (c !== card) c.classList.remove('open');
-      });
-    }
-    card.classList.toggle('open', willOpen);
-  });
-
-  return { toggle, body };
+  wrap.appendChild(tabBar);
+  wrap.appendChild(panels);
+  return wrap;
 }
 
-// ── content 마크다운 파서 ────────────────────────
+// ── content 마크다운 파싱 ────────────────────────
 
 /**
- * content 마크다운에서 특정 섹션 헤딩(`## {heading}`) 아래의
- * 첫 번째 ```json ~ ``` 코드블록 텍스트만 반환.
- * 섹션 또는 코드블록이 없으면 null.
- *
- * 취지: content는 사람이 편집한 마크다운이므로 섹션 구조는 유동적일 수 있으나,
- *       헤딩 "## {Client} 설정" 패턴은 설계도/데이터에서 고정돼 있다.
- *       다음 "## " 헤딩을 만날 때까지만 탐색하여 다른 섹션의 블록을 오염시키지 않는다.
+ * `## {heading}` 섹션 본문(다음 ## 전까지)을 반환.
+ * 섹션이 없으면 null.
+ * 헤딩 끝에 " (변형)" 또는 " — 변형" 형태의 꼬리 허용
+ * (예: "## Claude CLI 설정 (Remote MCP)").
  */
-function extractFirstJsonBlock(content, heading) {
+function extractSection(content, heading) {
   if (!content) return null;
-  // 헤딩 끝 뒤에 괄호/대시 한정자(예: " (Remote MCP)", " — 로컬 MCP") 변형 허용.
-  // 취지: mcp.json에 "## Claude CLI 설정 (Remote MCP)", "## Claude CLI 설정 — 로컬 MCP"
-  //       같은 변형이 실제 존재. literal 매칭 시 탭이 누락됨.
-  //       첫 번째 매치만 쓰므로 같은 클라이언트의 2가지 변형이 있을 경우 상단이 채택됨.
   const suffix = '(?:\\s*[—\\-–]\\s*[^\\n]+|\\s*\\([^)]*\\))?';
   const headingRe = new RegExp(`^##\\s+${escapeRegex(heading)}${suffix}\\s*$`, 'm');
-  const headingMatch = headingRe.exec(content);
-  if (!headingMatch) return null;
+  const m = headingRe.exec(content);
+  if (!m) return null;
 
-  const start = headingMatch.index + headingMatch[0].length;
-  // 다음 ## 헤딩 전까지 구간
+  const start = m.index + m[0].length;
   const rest = content.slice(start);
   const nextHeading = /\n##\s+/.exec(rest);
-  const section = nextHeading ? rest.slice(0, nextHeading.index) : rest;
+  const body = (nextHeading ? rest.slice(0, nextHeading.index) : rest).trim();
+  return body || null;
+}
 
+/** 특정 섹션 내 첫 ```json 블록 */
+function extractFirstJsonBlock(content, heading) {
+  const section = extractSection(content, heading);
+  if (!section) return null;
   const blockRe = /```json\s*\n([\s\S]*?)```/;
-  const blockMatch = blockRe.exec(section);
-  if (!blockMatch) return null;
-  return blockMatch[1].replace(/\s+$/, '');
+  const m = blockRe.exec(section);
+  if (!m) return null;
+  return m[1].replace(/\s+$/, '');
+}
+
+/**
+ * 본문 섹션용 초간단 마크다운 → DOM:
+ * - 연속된 `- ` → <ul><li>
+ * - 연속된 `숫자. ` → <ol><li>
+ * - 공백 줄로 분리된 나머지 → <p>
+ * - ```...``` → <pre><code>
+ * - 인라인 `code` → <code>
+ */
+function renderMarkdownInto(container, markdown) {
+  const lines = markdown.split('\n');
+  const blocks = [];
+  let buf = null;
+  let inCode = false;
+  let codeBuf = [];
+
+  const flush = () => { if (buf) { blocks.push(buf); buf = null; } };
+
+  for (const line of lines) {
+    if (inCode) {
+      if (/^\s*```/.test(line)) {
+        blocks.push({ type: 'code', text: codeBuf.join('\n') });
+        codeBuf = [];
+        inCode = false;
+      } else {
+        codeBuf.push(line);
+      }
+      continue;
+    }
+    if (/^\s*```/.test(line)) {
+      flush();
+      inCode = true;
+      continue;
+    }
+
+    const ul = /^\s*-\s+(.*)$/.exec(line);
+    const ol = /^\s*\d+\.\s+(.*)$/.exec(line);
+
+    if (ul) {
+      if (!buf || buf.type !== 'ul') { flush(); buf = { type: 'ul', items: [] }; }
+      buf.items.push(ul[1]);
+      continue;
+    }
+    if (ol) {
+      if (!buf || buf.type !== 'ol') { flush(); buf = { type: 'ol', items: [] }; }
+      buf.items.push(ol[1]);
+      continue;
+    }
+    if (line.trim() === '') { flush(); continue; }
+
+    if (!buf || buf.type !== 'p') { flush(); buf = { type: 'p', lines: [] }; }
+    buf.lines.push(line);
+  }
+  flush();
+
+  for (const b of blocks) {
+    if (b.type === 'p') {
+      const p = document.createElement('p');
+      applyInline(p, b.lines.join(' '));
+      container.appendChild(p);
+    } else if (b.type === 'ul' || b.type === 'ol') {
+      const list = document.createElement(b.type);
+      for (const item of b.items) {
+        const li = document.createElement('li');
+        applyInline(li, item);
+        list.appendChild(li);
+      }
+      container.appendChild(list);
+    } else if (b.type === 'code') {
+      const pre = document.createElement('pre');
+      const code = document.createElement('code');
+      code.textContent = b.text;
+      pre.appendChild(code);
+      container.appendChild(pre);
+    }
+  }
+}
+
+function applyInline(el, text) {
+  const re = /`([^`]+)`/g;
+  let last = 0;
+  let m;
+  while ((m = re.exec(text)) !== null) {
+    if (m.index > last) el.appendChild(document.createTextNode(text.slice(last, m.index)));
+    const code = document.createElement('code');
+    code.textContent = m[1];
+    el.appendChild(code);
+    last = m.index + m[0].length;
+  }
+  if (last < text.length) el.appendChild(document.createTextNode(text.slice(last)));
 }
 
 function escapeRegex(s) {
