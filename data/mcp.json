@@ -1,16 +1,16 @@
 {
   "_comment": "자동 생성 파일 — parse-mcp-files.js가 갱신. 수동 편집 금지.",
-  "generated": "2026-04-18T13:59:41.144Z",
-  "total": 33,
+  "generated": "2026-04-19T05:21:55.331Z",
+  "total": 37,
   "mcps": [
     {
       "name": "jetbrains",
       "display_name": "JetBrains MCP",
       "category": "개발환경 & IDE",
-      "status": "unverified",
+      "operation_type": "collaboration",
       "api_key": "none",
-      "operation_type": "integration",
       "website": "https://www.jetbrains.com",
+      "docs": "https://www.jetbrains.com/help/idea/mcp.html",
       "github": "https://github.com/JetBrains/mcp-jetbrains",
       "description": "JetBrains IDE(IntelliJ, PyCharm, WebStorm 등)와 Claude를 직접 연동 — AI가 IDE 기능을 직접 제어",
       "features": [
@@ -22,17 +22,18 @@
         "claude-cli",
         "claude-desktop"
       ],
-      "content": "## 소개\n\nJetBrains IDE에 내장된 MCP 서버를 통해 Claude가 IntelliJ IDEA, PyCharm, WebStorm 등 JetBrains IDE를 직접 제어할 수 있습니다. 2025.2 버전 이상에서 IDE에 내장되어 제공됩니다.\n\n## Claude CLI 설정\n\n```json\n\"jetbrains\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"@jetbrains/mcp-proxy\"\n  ],\n  \"env\": {\n    \"IDE_PORT\": \"63342\"\n  }\n}\n```\n\n## 주의사항\n- JetBrains IDE 2025.2 이상 버전에서는 IDE에 내장된 MCP 서버 사용 권장\n- `@jetbrains/mcp-proxy` npm 패키지는 구버전(2025.1 이하) 전용으로 deprecated 예정\n- IDE가 실행 중이어야 MCP 연결 가능\n- `IDE_PORT`: JetBrains IDE 기본 포트 63342 (IDE 설정에서 변경 가능)"
+      "researched_at": "2026-04-19",
+      "content": "# JetBrains MCP\n\n## 소개\n\nJetBrains IDE에 내장된 MCP 서버를 Claude와 연결하는 방식.\nIntelliJ IDEA·PyCharm·WebStorm·GoLand 등 JetBrains 제품군을 AI가 직접 제어하여\n파일 탐색·코드 편집·리팩터링·실행을 대화형으로 수행한다.\n2025.2 버전 이상에서 IDE에 MCP 서버가 내장 제공된다.\n\n## 주요 기능\n\n- IDE가 열고 있는 프로젝트 파일 조회·편집\n- 코드 검색·리팩터링 명령\n- 디버거·런 설정 연동\n- IDE UI 기능 원격 제어\n\n## 사용법\n\n1. JetBrains IDE 2025.2 이상 실행 (내장 MCP 서버 활성).\n2. IDE 설정에서 MCP 포트 확인 (기본 `63342`).\n3. Claude 설정 env `IDE_PORT`에 해당 포트 기입.\n4. IDE 실행 상태에서만 MCP 연결 가능.\n\n## 기타\n\n- 2025.1 이하 버전은 `@jetbrains/mcp-proxy` npm 패키지 사용 (deprecated 예정).\n- `IDE_PORT`: JetBrains IDE 기본 포트 63342, IDE 설정에서 변경 가능.\n\n## Claude CLI 설정\n\n```json\n\"jetbrains\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"@jetbrains/mcp-proxy\"\n  ],\n  \"env\": {\n    \"IDE_PORT\": \"63342\"\n  }\n}\n```\n\n## Claude Desktop 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"jetbrains\": {\n      \"command\": \"cmd\",\n      \"args\": [\n        \"/c\",\n        \"npx\",\n        \"-y\",\n        \"@jetbrains/mcp-proxy\"\n      ],\n      \"env\": {\n        \"IDE_PORT\": \"63342\"\n      }\n    }\n  }\n}\n```"
     },
     {
       "name": "vscode-mcp",
       "display_name": "VS Code MCP 연동 가이드",
       "category": "개발환경 & IDE",
-      "status": "unverified",
+      "operation_type": "docs",
       "api_key": "none",
-      "operation_type": "integration",
       "website": "https://code.visualstudio.com",
-      "github": "https://github.com/modelcontextprotocol/servers",
+      "docs": "https://code.visualstudio.com/docs/copilot/chat/mcp-servers",
+      "github": "https://github.com/microsoft/vscode",
       "description": "VS Code 에이전트 모드에서 MCP 서버를 연결하여 AI 코딩 워크플로우 구성",
       "features": [
         "IDE연동",
@@ -40,19 +41,19 @@
         "코드편집"
       ],
       "supported_clients": [
-        "claude-cli",
-        "claude-desktop"
+        "vscode"
       ],
-      "content": "## 소개\n\nVS Code 1.99 이상(2025-07 GA)에서 MCP 클라이언트를 지원합니다. VS Code 에이전트 모드에서 MCP 서버를 연결하여 AI 코딩 워크플로우를 구성할 수 있습니다.\n\n## VS Code settings.json 설정\n\nVS Code에서 MCP 서버를 연결하려면 `.vscode/mcp.json` 또는 `settings.json`에 추가합니다.\n\n```json\n{\n  \"mcp\": {\n    \"servers\": {\n      \"your-mcp-server\": {\n        \"command\": \"cmd\",\n        \"args\": [\"/c\", \"npx\", \"-y\", \"your-mcp-package\"]\n      }\n    }\n  }\n}\n```\n\n## 주의사항\n- VS Code 1.99 이상 필요\n- MCP 지원은 GitHub Copilot 에이전트 모드에서 활성화\n- VS Code 자체는 MCP 클라이언트로 동작 — Claude CLI와는 독립적\n- Claude Code VS Code 확장 사용 시 Claude Code 자체 MCP 설정(`.mcp.json`) 사용 권장"
+      "researched_at": "2026-04-19",
+      "content": "# VS Code MCP 연동 가이드\n\n## 소개\n\nVS Code 자체가 MCP 클라이언트로 동작하는 경우의 연결 방법을 정리한 가이드.\nVS Code 1.99 이상에서 GitHub Copilot 에이전트 모드를 통해 MCP 서버를 직접 연결할 수 있어,\nVS Code 안에서 MCP 기반 AI 코딩 워크플로우를 구성한다.\n\n## 주요 기능\n\n- VS Code가 MCP 클라이언트로 동작\n- GitHub Copilot 에이전트 모드에서 MCP 서버 호출\n- `.vscode/mcp.json` 또는 `settings.json`으로 서버 등록\n- Claude Code VS Code 확장과 독립적으로 작동\n\n## 사용법\n\n`.vscode/mcp.json` 또는 `settings.json`에 MCP 서버 항목을 추가한 뒤\nCopilot Chat의 에이전트 모드에서 해당 도구를 호출.\n\n## 기타\n\n- VS Code 1.99 이상 필요.\n- MCP 지원은 GitHub Copilot 에이전트 모드에서 활성화.\n- Claude Code VS Code 확장 사용 시에는 Claude Code 자체 MCP 설정(`.mcp.json`)을 쓰는 편이 일관성 유지에 유리.\n\n## VSCode 설정\n\n```json\n{\n  \"mcp\": {\n    \"servers\": {\n      \"your-mcp-server\": {\n        \"command\": \"cmd\",\n        \"args\": [\n          \"/c\",\n          \"npx\",\n          \"-y\",\n          \"your-mcp-package\"\n        ]\n      }\n    }\n  }\n}\n```"
     },
     {
       "name": "context7",
       "display_name": "Context7",
       "category": "검색 & 정보수집",
-      "status": "verified",
-      "api_key": "none",
       "operation_type": "docs",
+      "api_key": "none",
       "website": "https://context7.com",
+      "docs": "https://github.com/upstash/context7/blob/master/README.md",
       "github": "https://github.com/upstash/context7",
       "description": "라이브러리·프레임워크 최신 공식 문서를 실시간으로 제공 — 구버전 정보 대신 현재 문서 기준 답변",
       "features": [
@@ -66,16 +67,17 @@
         "codex",
         "gemini-cli"
       ],
-      "content": "# context7 MCP\n\n## 소개\n라이브러리/프레임워크의 최신 공식 문서를 실시간으로 Claude에게 제공.\nClaude 학습 데이터의 구버전 정보 대신 현재 문서 기준으로 답변 유도.\n\n## 적합한 프로젝트\n- 빠르게 버전업되는 프레임워크 사용 프로젝트 (Next.js, React, Vue 등)\n- 외부 라이브러리 의존도가 높은 프로젝트\n- 전역 등록 권장\n\n## API 키\n불필요\n\n## 현재 검증 버전\n`@latest` — Upstash 제공, 문서 DB가 지속 업데이트되므로 latest 유지\n\n## Claude CLI 설정\n\n```json\n\"context7\": {\n  \"type\": \"stdio\",\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"@upstash/context7-mcp\"\n  ],\n  \"env\": {}\n}\n```\n\n## 사용 팁\n- 자동 호출되기도 하지만 **명시적 요청이 품질 보장**에 유리\n- 프롬프트에 `\"use context7\"` 추가 시 강제 최신 문서 기준 답변\n- 버전이 중요한 라이브러리 작업 시 반드시 명시\n\n## 업데이트 이력\n- 초기 등록: 2025-03-13"
+      "researched_at": "2026-04-19",
+      "content": "# context7 MCP\n\n## 소개\n\nUpstash가 제공하는 Context7의 MCP 서버.\n라이브러리·프레임워크의 최신 공식 문서를 실시간으로 조회하여 AI에게 전달한다.\nAI 학습 데이터의 구버전 정보 대신 현재 문서 기준으로 답변을 유도하므로,\n빠르게 버전업되는 프레임워크를 다루는 프로젝트에 전역 등록을 권장.\n\n## 주요 기능\n\n- 라이브러리·프레임워크 최신 문서 실시간 조회\n- 문서 DB 지속 업데이트 (Upstash 운영)\n- 프롬프트 키워드 기반 문서 컨텍스트 주입\n- API 키 불필요·원격 호출로 로컬 부하 없음\n\n## 사용법\n\n전역 설정에 등록 후, 프롬프트에 `\"use context7\"`을 포함하면 강제 최신 문서 기준 답변.\n버전이 중요한 라이브러리 작업 시 명시적 호출 권장.\n자동 호출도 되지만 명시적 요청이 품질 보장에 유리.\n\n## 기타\n\n- 외부 원격 호출이므로 네트워크 단절 환경에서는 비활성 상태가 된다.\n\n## Claude CLI 설정\n\n```json\n\"context7\": {\n  \"type\": \"stdio\",\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"@upstash/context7-mcp\"\n  ],\n  \"env\": {}\n}\n```\n\n## Claude Desktop 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"context7\": {\n      \"command\": \"cmd\",\n      \"args\": [\n        \"/c\",\n        \"npx\",\n        \"-y\",\n        \"@upstash/context7-mcp\"\n      ]\n    }\n  }\n}\n```\n\n## Codex 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"context7\": {\n      \"command\": \"npx\",\n      \"args\": [\n        \"-y\",\n        \"@upstash/context7-mcp\"\n      ]\n    }\n  }\n}\n```\n\n## Gemini CLI 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"context7\": {\n      \"command\": \"npx\",\n      \"args\": [\n        \"-y\",\n        \"@upstash/context7-mcp\"\n      ]\n    }\n  }\n}\n```"
     },
     {
       "name": "exa",
       "display_name": "Exa",
       "category": "검색 & 정보수집",
-      "status": "verified",
+      "operation_type": "information",
       "api_key": "required",
-      "operation_type": "search",
       "website": "https://exa.ai",
+      "docs": "https://docs.exa.ai",
       "dashboard": "https://dashboard.exa.ai",
       "api_docs": "https://dashboard.exa.ai/api-keys",
       "github": "https://github.com/exa-labs/exa-mcp-server",
@@ -91,16 +93,17 @@
         "codex",
         "gemini-cli"
       ],
-      "content": "# exa MCP\n\n## 소개\nExa AI 기반 시맨틱 웹 검색. 기본 웹서치보다 코드·기술 문서·학술 자료 검색에 특화.\n의미 기반 검색으로 관련도 높은 결과 반환.\n\n## 적합한 프로젝트\n- 기술 리서치가 필요한 프로젝트\n- 최신 정보 수집이 중요한 프로젝트\n- 전역 등록 권장\n\n## API 키\n**필요** — Exa 대시보드에서 발급\n- 발급: https://dashboard.exa.ai/api-keys\n\n## 현재 검증 버전\n`exa-mcp-server@latest`\n\n## Claude CLI 설정\n\n```json\n\"exa\": {\n  \"type\": \"stdio\",\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"exa-mcp-server\"\n  ],\n  \"env\": {\n    \"EXA_API_KEY\": \"YOUR_EXA_API_KEY\"\n  }\n}\n```\n\n## 주의사항\n- API 키를 `.claude.json` 또는 `.mcp.json`에 직접 기재 시 **Git 커밋에 노출 주의**\n- `.gitignore`에 해당 파일 포함 여부 반드시 확인\n\n## 업데이트 이력\n- 초기 등록: 2025-03-13"
+      "researched_at": "2026-04-19",
+      "content": "# exa MCP\n\n## 소개\n\nExa의 시맨틱 웹 검색을 MCP로 연결하는 서버.\n일반 키워드 검색과 달리 의미 기반 매칭으로 관련도 높은 결과를 반환하며,\n코드·기술 문서·학술 자료 검색에서 품질이 높다.\n리서치 비중이 높은 프로젝트에 전역 등록을 권장.\n\n## 주요 기능\n\n- 시맨틱(의미 기반) 웹 검색\n- 코드 검색 특화 엔드포인트\n- 기술 문서·학술 자료 중심의 결과 랭킹\n- 페이지 본문 요약·추출 기능\n\n## 사용법\n\nExa 대시보드에서 API 키를 발급받아 설정 env에 기입.\n최신 정보 수집·기술 리서치가 필요한 작업에서 일반 WebSearch보다 우선 호출하도록 프롬프트에 명시하면 품질이 좋다.\n\n## 기타\n\n- API 키를 `.claude.json` 또는 `.mcp.json`에 직접 기재 시 Git 커밋 노출 주의.\n- 해당 파일을 `.gitignore`에 포함했는지 반드시 확인.\n\n## Claude CLI 설정\n\n```json\n\"exa\": {\n  \"type\": \"stdio\",\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"exa-mcp-server\"\n  ],\n  \"env\": {\n    \"EXA_API_KEY\": \"YOUR_EXA_API_KEY\"\n  }\n}\n```\n\n## Claude Desktop 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"exa\": {\n      \"command\": \"cmd\",\n      \"args\": [\n        \"/c\",\n        \"npx\",\n        \"-y\",\n        \"exa-mcp-server\"\n      ],\n      \"env\": {\n        \"EXA_API_KEY\": \"YOUR_EXA_API_KEY\"\n      }\n    }\n  }\n}\n```\n\n## Codex 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"exa\": {\n      \"command\": \"npx\",\n      \"args\": [\n        \"-y\",\n        \"exa-mcp-server\"\n      ],\n      \"env\": {\n        \"EXA_API_KEY\": \"YOUR_EXA_API_KEY\"\n      }\n    }\n  }\n}\n```\n\n## Gemini CLI 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"exa\": {\n      \"command\": \"npx\",\n      \"args\": [\n        \"-y\",\n        \"exa-mcp-server\"\n      ],\n      \"env\": {\n        \"EXA_API_KEY\": \"YOUR_EXA_API_KEY\"\n      }\n    }\n  }\n}\n```"
     },
     {
       "name": "dynamics365",
       "display_name": "Dynamics 365 ERP MCP",
       "category": "금융 & 비즈니스",
-      "status": "unverified",
-      "api_key": "required",
       "operation_type": "infrastructure",
+      "api_key": "required",
       "website": "https://dynamics.microsoft.com",
+      "docs": "https://learn.microsoft.com/en-us/dynamics365/fin-ops-core/dev-itpro/copilot/copilot-mcp",
       "api_docs": "https://learn.microsoft.com/en-us/dynamics365/fin-ops-core/dev-itpro/copilot/copilot-mcp",
       "description": "Microsoft Dynamics 365 Finance & Supply Chain ERP 기능 연동 (Public Preview)",
       "features": [
@@ -113,16 +116,17 @@
         "claude-cli",
         "claude-desktop"
       ],
-      "content": "## 소개\n\nMicrosoft Dynamics 365 ERP MCP 서버. Finance & Supply Chain Management의 방대한 ERP 기능을 AI로 연결합니다. 2025 Microsoft Build에서 발표, 현재 Public Preview 단계입니다.\n\n## Claude CLI 설정 (Remote MCP)\n\n```json\n\"dynamics365\": {\n  \"type\": \"http\",\n  \"url\": \"https://YOUR_D365_INSTANCE.dynamics.com/mcp\",\n  \"headers\": {\n    \"Authorization\": \"Bearer YOUR_ENTRA_ACCESS_TOKEN\"\n  }\n}\n```\n\n## 주의사항\n- Microsoft Dynamics 365 라이선스 필요 (엔터프라이즈)\n- Microsoft Entra ID(Azure AD) OAuth 인증 필요\n- Public Preview 단계 — 프로덕션 사용 주의\n- `YOUR_D365_INSTANCE`를 실제 인스턴스 URL로 교체\n- 엔터프라이즈 환경 전용"
+      "researched_at": "2026-04-19",
+      "content": "# Dynamics 365 ERP MCP\n\n## 소개\n\nMicrosoft Dynamics 365 ERP의 Remote MCP 서버.\nFinance & Supply Chain Management 기능을 AI와 연결해\n재무 데이터 조회, 전표 처리, 공급망 운영 자동화 등 엔터프라이즈 업무를 대화형으로 수행 가능.\n2025 Microsoft Build에서 공개, 현재 Public Preview 단계.\n\n## 주요 기능\n\n- 재무 모듈(GL·AP·AR) 조회·처리\n- 공급망 재고·주문 관리\n- 엔터프라이즈 권한 기반 데이터 접근\n- Microsoft Copilot과 연계한 업무 자동화\n\n## 사용법\n\n1. Dynamics 365 엔터프라이즈 라이선스 및 인스턴스 URL 확보.\n2. Microsoft Entra ID(Azure AD)에서 OAuth 인증 → Access Token 발급.\n3. 설정의 `url`에 실제 인스턴스 URL, `Authorization` 헤더에 Bearer 토큰 기입.\n\n## 기타\n\n- Public Preview 단계 — 프로덕션 사용 전 Microsoft 공지 확인 필수.\n- 엔터프라이즈 전용 — 개인 계정으로는 이용 불가.\n- Entra ID 토큰 갱신 주기 관리 필요.\n\n## Claude CLI 설정\n\n```json\n\"dynamics365\": {\n  \"type\": \"http\",\n  \"url\": \"https://YOUR_D365_INSTANCE.dynamics.com/mcp\",\n  \"headers\": {\n    \"Authorization\": \"Bearer YOUR_ENTRA_ACCESS_TOKEN\"\n  }\n}\n```\n\n## Claude Desktop 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"dynamics365\": {\n      \"type\": \"http\",\n      \"url\": \"https://YOUR_D365_INSTANCE.dynamics.com/mcp\",\n      \"headers\": {\n        \"Authorization\": \"Bearer YOUR_ENTRA_ACCESS_TOKEN\"\n      }\n    }\n  }\n}\n```"
     },
     {
       "name": "quickbooks",
       "display_name": "QuickBooks Online MCP",
       "category": "금융 & 비즈니스",
-      "status": "unverified",
+      "operation_type": "collaboration",
       "api_key": "required",
-      "operation_type": "integration",
       "website": "https://quickbooks.intuit.com",
+      "docs": "https://developer.intuit.com/app/developer/qbo/docs/develop",
       "api_docs": "https://developer.intuit.com/app/developer/qbo/docs/get-started",
       "github": "https://github.com/intuit/quickbooks-online-mcp-server",
       "description": "QuickBooks Online 재무보고서·전표·세금·고객·거래 관리 (Intuit 공식)",
@@ -136,298 +140,17 @@
         "claude-cli",
         "claude-desktop"
       ],
-      "content": "## 소개\n\nIntuit 공식 MCP 서버. QuickBooks Online의 143개 도구를 통해 재무보고서(대차대조표·손익계산서·현금흐름표) 조회, 전표 입력, 세금 처리 등을 자동화합니다.\n\n## Claude CLI 설정\n\n```json\n\"quickbooks\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"quickbooks-online-mcp-server\"\n  ],\n  \"env\": {\n    \"QB_CLIENT_ID\": \"YOUR_CLIENT_ID\",\n    \"QB_CLIENT_SECRET\": \"YOUR_CLIENT_SECRET\",\n    \"QB_REFRESH_TOKEN\": \"YOUR_REFRESH_TOKEN\",\n    \"QB_REALM_ID\": \"YOUR_REALM_ID\",\n    \"QB_ENVIRONMENT\": \"production\"\n  }\n}\n```\n\n## 주의사항\n- Intuit Developer 계정에서 앱 생성 및 OAuth2 자격증명 발급 필요\n- `QB_ENVIRONMENT`: `production` 또는 `sandbox`\n- 5개 환경변수 모두 필수\n- 자격증명 Git 노출 절대 금지\n- QuickBooks Online 유료 구독 필요"
-    },
-    {
-      "name": "mindsdb",
-      "display_name": "MindsDB MCP",
-      "category": "데이터 & DB",
-      "status": "unverified",
-      "api_key": "required",
-      "operation_type": "integration",
-      "website": "https://mindsdb.com",
-      "github": "https://github.com/mindsdb/mindsdb",
-      "description": "Oracle, PostgreSQL, MongoDB, Snowflake 등 멀티 DB를 통합하여 AI로 연결",
-      "features": [
-        "멀티DB",
-        "PostgreSQL",
-        "MongoDB",
-        "Snowflake",
-        "AI쿼리"
-      ],
-      "supported_clients": [
-        "claude-cli",
-        "claude-desktop"
-      ],
-      "content": "## 소개\n\nMindsDB는 여러 데이터베이스를 통합하여 AI로 연결하는 플랫폼입니다. Oracle, PostgreSQL, MongoDB, Snowflake 등 다양한 DB를 하나의 MCP로 관리할 수 있습니다.\n\n## Claude CLI 설정\n\n```json\n\"mindsdb\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"@mindsdb/mcp-server\"\n  ],\n  \"env\": {\n    \"MINDSDB_HOST\": \"YOUR_MINDSDB_HOST\",\n    \"MINDSDB_USER\": \"YOUR_USERNAME\",\n    \"MINDSDB_PASSWORD\": \"YOUR_PASSWORD\"\n  }\n}\n```\n\n## 주의사항\n- MindsDB 서버 또는 MindsDB Cloud 계정 필요\n- DB 자격증명 Git 노출 주의\n- 연결할 DB별 별도 설정 필요"
-    },
-    {
-      "name": "postgres",
-      "display_name": "PostgreSQL MCP",
-      "category": "데이터 & DB",
-      "status": "unverified",
-      "api_key": "required",
-      "operation_type": "integration",
-      "website": "https://www.postgresql.org",
-      "github": "https://github.com/modelcontextprotocol/servers",
-      "description": "PostgreSQL 데이터베이스 스키마 조회 및 읽기 전용 쿼리 실행 (Anthropic 공식)",
-      "features": [
-        "DB쿼리",
-        "스키마조회",
-        "PostgreSQL"
-      ],
-      "supported_clients": [
-        "claude-cli",
-        "claude-desktop"
-      ],
-      "content": "## 소개\n\nAnthropic 공식 MCP 서버. PostgreSQL 데이터베이스에 연결하여 스키마 구조 조회 및 읽기 전용 SQL 쿼리를 실행할 수 있습니다.\n\n## Claude CLI 설정\n\n```json\n\"postgres\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"@modelcontextprotocol/server-postgres\",\n    \"postgresql://localhost/mydb\"\n  ]\n}\n```\n\n## 주의사항\n- 연결 문자열 형식: `postgresql://[user[:password]@][host][:port][/dbname]`\n- 기본 설정은 **읽기 전용** — 데이터 수정 작업 불가\n- DB 접속 정보(비밀번호 포함) Git 노출 주의\n- 프로덕션 DB에 직접 연결 시 읽기 전용 계정 사용 권장"
-    },
-    {
-      "name": "notebooklm",
-      "display_name": "NotebookLM MCP",
-      "category": "문서 & 지식관리",
-      "status": "verified",
-      "api_key": "none",
-      "operation_type": "integration",
-      "website": "https://notebooklm.google.com",
-      "description": "NotebookLM 노트 연동 — 문서 분석 및 리서치 작업 지원",
-      "features": [
-        "문서분석",
-        "리서치",
-        "노트관리"
-      ],
-      "supported_clients": [
-        "claude-cli",
-        "claude-desktop"
-      ],
-      "content": "# notebooklm MCP\n\n## 소개\nNotebookLM 노트 연동. 문서 분석, 리서치 작업 시 사용.\n\n## 적합한 프로젝트\n- 문서 기반 프로젝트\n- 리서치/분석 작업\n\n## 현재 검증 버전\n`1.2.1` (검증일: 2025-03-13)\n\n## Claude CLI 설정\n```json\n\"notebooklm\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"notebooklm-mcp@1.2.1\"\n  ]\n}\n```\n\n## 업데이트 이력\n- 1.2.1 : 안정화 버전 확인"
-    },
-    {
-      "name": "notion",
-      "display_name": "Notion MCP",
-      "category": "문서 & 지식관리",
-      "status": "verified",
-      "api_key": "required",
-      "operation_type": "integration",
-      "website": "https://notion.so",
-      "api_docs": "https://www.notion.so/my-integrations",
-      "github": "https://github.com/makenotion/notion-mcp-server",
-      "description": "Notion 페이지·데이터베이스 읽기·쓰기·검색 자동화",
-      "features": [
-        "페이지관리",
-        "데이터베이스",
-        "문서검색"
-      ],
-      "supported_clients": [
-        "claude-cli",
-        "claude-desktop"
-      ],
-      "content": "# notion MCP\n\n## 소개\nNotion 페이지 읽기/쓰기/검색 자동화.\nClaude가 직접 Notion 데이터베이스 조회, 페이지 생성, 내용 업데이트 가능.\n\n## 적합한 프로젝트\n- Notion 기반 문서 관리 프로젝트\n- 회의록, 작업 일지 자동화\n- 데이터베이스 기반 정보 관리\n\n## API 키\n**필요** — Notion Integration Token\n- 발급: https://www.notion.so/my-integrations → New integration\n- 생성 후 사용할 페이지/DB에 Integration 연결 필수\n\n## 현재 검증 버전\n`@notionhq/notion-mcp-server@latest`\n\n## Claude CLI 설정\n\n```json\n\"notionApi\": {\n  \"command\": \"npx\",\n  \"args\": [\n    \"-y\",\n    \"@notionhq/notion-mcp-server\"\n  ],\n  \"env\": {\n    \"NOTION_TOKEN\": \"YOUR_NOTION_TOKEN\"\n  }\n}\n```\n\n## 주의사항\n- `command`가 `npx` 직접 호출 (cmd /c 래퍼 없음) — Windows 환경에서 PATH 설정 확인 필요\n- 필요한 페이지에만 Integration 연결 권장 (전체 워크스페이스 접근 지양)\n- claude.ai Notion MCP 사용 중이라면 **중복 등록 주의**\n\n## 대안\nClaude Desktop의 claude.ai Notion MCP 인증 사용 시 이 파일 불필요\n\n## 업데이트 이력\n- 초기 등록: 2025-03-13"
-    },
-    {
-      "name": "image-gen",
-      "display_name": "Image Generation MCP",
-      "category": "미디어",
-      "status": "verified",
-      "api_key": "required",
-      "operation_type": "generation",
-      "website": "https://aistudio.google.com",
-      "api_docs": "https://aistudio.google.com/app/apikey",
-      "description": "Google Gemini API 기반 이미지 생성 — 텍스트 프롬프트로 이미지 생성 및 저장",
-      "features": [
-        "이미지생성",
-        "텍스트-이미지",
-        "Gemini"
-      ],
-      "supported_clients": [
-        "claude-cli",
-        "claude-desktop"
-      ],
-      "content": "# image-gen MCP\n\n## 소개\nGoogle Gemini API 기반 이미지 생성. Claude가 직접 이미지 생성 요청 가능.\n텍스트 프롬프트로 이미지 생성 및 저장.\n\n## 적합한 프로젝트\n- 이미지 에셋 자동 생성이 필요한 프로젝트\n- 콘텐츠 제작 자동화\n- 프로토타입 UI 목업 이미지 생성\n\n## API 키\n**필요** — Google AI Studio (Gemini) API 키\n- 발급: https://aistudio.google.com/app/apikey\n\n## 현재 검증 버전\n`image-generation-mcp@latest`\n\n## Claude CLI 설정\n\n```json\n\"image-gen\": {\n  \"command\": \"npx\",\n  \"args\": [\n    \"-y\",\n    \"image-generation-mcp\"\n  ],\n  \"env\": {\n    \"GOOGLE_API_KEY\": \"YOUR_GOOGLE_API_KEY\"\n  }\n}\n```\n\n## Windows 호환 설정\n\n```json\n\"image-gen\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"image-generation-mcp\"\n  ],\n  \"env\": {\n    \"GOOGLE_API_KEY\": \"YOUR_GOOGLE_API_KEY\"\n  }\n}\n```\n\n## 주의사항\n- Gemini 이미지 생성은 **무료 티어 한도** 존재 — 대량 생성 시 비용 발생\n- 생성된 이미지 저장 경로 사전 확인 필요\n- API 키 Git 노출 주의\n\n## 업데이트 이력\n- 초기 등록: 2025-03-13"
-    },
-    {
-      "name": "youtube",
-      "display_name": "YouTube Data MCP",
-      "category": "미디어",
-      "status": "verified",
-      "api_key": "required",
-      "operation_type": "search",
-      "website": "https://youtube.com",
-      "api_docs": "https://console.cloud.google.com",
-      "description": "YouTube 영상 검색·메타데이터 조회·자막 추출 — Claude가 직접 YouTube 콘텐츠 분석",
-      "features": [
-        "영상검색",
-        "자막추출",
-        "메타데이터"
-      ],
-      "supported_clients": [
-        "claude-cli",
-        "claude-desktop"
-      ],
-      "content": "# youtube MCP\n\n## 소개\nYouTube Data API 연동. 영상 검색, 메타데이터 조회, 자막(트랜스크립트) 추출.\nClaude가 직접 YouTube 콘텐츠 분석 가능.\n\n## 적합한 프로젝트\n- Youtube-WebDown 프로젝트\n- 영상 콘텐츠 분석/정리 프로젝트\n- 자막 기반 요약, 번역 작업\n\n## API 키\n**필요** — Google YouTube Data API v3 키\n- 발급: https://console.cloud.google.com → API 및 서비스 → YouTube Data API v3 활성화\n\n## 현재 검증 버전\n`youtube-data-mcp-server@latest`\n\n## Claude CLI 설정\n\n```json\n\"youtube\": {\n  \"command\": \"npx\",\n  \"args\": [\n    \"-y\",\n    \"youtube-data-mcp-server\"\n  ],\n  \"env\": {\n    \"YOUTUBE_API_KEY\": \"YOUR_YOUTUBE_API_KEY\",\n    \"YOUTUBE_TRANSCRIPT_LANG\": \"ko\"\n  }\n}\n```\n\n## Windows 호환 설정\n\n```json\n\"youtube\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"youtube-data-mcp-server\"\n  ],\n  \"env\": {\n    \"YOUTUBE_API_KEY\": \"YOUR_YOUTUBE_API_KEY\",\n    \"YOUTUBE_TRANSCRIPT_LANG\": \"ko\"\n  }\n}\n```\n\n## 주의사항\n- YouTube Data API는 **일일 할당량(Quota)** 존재 — 대량 요청 시 한도 초과 주의\n- `YOUTUBE_TRANSCRIPT_LANG`: `ko` (한국어), `en` (영어) 등 언어 코드 지정\n\n## 업데이트 이력\n- 초기 등록: 2025-03-13"
-    },
-    {
-      "name": "puppeteer",
-      "display_name": "Puppeteer MCP",
-      "category": "브라우저 & 자동화",
-      "status": "verified",
-      "api_key": "none",
-      "operation_type": "automation",
-      "website": "https://pptr.dev",
-      "github": "https://github.com/modelcontextprotocol/servers",
-      "description": "Chromium 브라우저 자동화 — 웹 스크래핑·스크린샷·폼 자동 입력·SPA 크롤링",
-      "features": [
-        "브라우저자동화",
-        "웹스크래핑",
-        "스크린샷"
-      ],
-      "supported_clients": [
-        "claude-cli",
-        "claude-desktop"
-      ],
-      "content": "# puppeteer MCP\n\n## 소개\nChromium 브라우저 자동화. 웹 스크래핑, 스크린샷 캡처, 폼 자동 입력, SPA 크롤링.\nJavaScript 렌더링이 필요한 동적 페이지 처리 가능.\n\n## 적합한 프로젝트\n- 웹 스크래핑/크롤링 프로젝트\n- 자동화 테스트\n- 웹 데이터 수집 (부동산, 상권 데이터 등)\n- Image-Source-Download, Youtube-WebDown 류 프로젝트\n\n## API 키\n불필요\n\n## 현재 검증 버전\n`@modelcontextprotocol/server-puppeteer@latest`\n\n## Claude CLI 설정\n\n```json\n\"puppeteer\": {\n  \"command\": \"npx\",\n  \"args\": [\n    \"-y\",\n    \"@modelcontextprotocol/server-puppeteer\"\n  ]\n}\n```\n\n## 주의사항\n- `command`가 `npx` 직접 호출 — Windows 환경에서 필요 시 `cmd /c` 래퍼 추가\n- Chromium 첫 실행 시 자동 다운로드 (수백 MB) — 시간 소요\n- 헤드리스 환경(서버)에서는 추가 설정 필요할 수 있음\n\n## Windows 호환 설정\n\n```json\n\"puppeteer\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"@modelcontextprotocol/server-puppeteer\"\n  ]\n}\n```\n\n## 업데이트 이력\n- 초기 등록: 2025-03-13"
-    },
-    {
-      "name": "atlassian",
-      "display_name": "Atlassian MCP",
-      "category": "생산성 & 협업",
-      "status": "unverified",
-      "api_key": "required",
-      "operation_type": "integration",
-      "website": "https://www.atlassian.com",
-      "api_docs": "https://id.atlassian.com/manage-profile/security/api-tokens",
-      "description": "Jira 이슈 및 Confluence 페이지 생성·조회·일괄 처리 (Atlassian 공식 Remote MCP)",
-      "features": [
-        "Jira이슈",
-        "Confluence페이지",
-        "프로젝트관리"
-      ],
-      "supported_clients": [
-        "claude-cli",
-        "claude-desktop"
-      ],
-      "content": "## 소개\n\nAtlassian 공식 Remote MCP 서버. Jira 이슈 관리와 Confluence 문서 작업을 Claude에서 직접 수행할 수 있습니다. Remote MCP 방식으로 별도 npm 설치 없이 URL로 연결합니다.\n\n## Claude CLI 설정 (Remote MCP)\n\n```json\n\"atlassian\": {\n  \"type\": \"http\",\n  \"url\": \"https://mcp.atlassian.com/v1/sse\",\n  \"headers\": {\n    \"Authorization\": \"Bearer YOUR_ATLASSIAN_API_TOKEN\"\n  }\n}\n```\n\n또는 CLI 명령어로 추가:\n```bash\nclaude mcp add --transport http atlassian https://mcp.atlassian.com/v1/sse\n```\n\n## 주의사항\n- Atlassian API Token 발급: https://id.atlassian.com/manage-profile/security/api-tokens\n- Remote MCP 방식 — 로컬 npm 패키지 설치 불필요\n- Atlassian Cloud 계정 필요 (Server/Data Center 미지원)\n- API Token Git 노출 절대 금지"
-    },
-    {
-      "name": "linear",
-      "display_name": "Linear MCP",
-      "category": "생산성 & 협업",
-      "status": "unverified",
-      "api_key": "required",
-      "operation_type": "integration",
-      "website": "https://linear.app",
-      "api_docs": "https://linear.app/settings/api",
-      "github": "https://github.com/jerhadf/linear-mcp-server",
-      "description": "Linear 이슈·프로젝트·팀 관리 및 GraphQL API 연동",
-      "features": [
-        "이슈관리",
-        "프로젝트관리",
-        "팀협업"
-      ],
-      "supported_clients": [
-        "claude-cli",
-        "claude-desktop"
-      ],
-      "content": "## 소개\n\nLinear 공식 Remote MCP 서버. Claude가 Linear 이슈를 생성·조회·업데이트하고 프로젝트와 팀을 관리할 수 있습니다.\n\n## Claude CLI 설정 (Remote MCP)\n\n```json\n\"linear\": {\n  \"type\": \"http\",\n  \"url\": \"https://mcp.linear.app/sse\",\n  \"headers\": {\n    \"Authorization\": \"Bearer YOUR_LINEAR_API_KEY\"\n  }\n}\n```\n\n또는 CLI 명령어로 추가:\n```bash\nclaude mcp add --transport http linear https://mcp.linear.app/sse\n```\n\n## 주의사항\n- Linear API Key 발급: https://linear.app/settings/api\n- Remote MCP 방식 — 로컬 npm 패키지 설치 불필요\n- Linear 유료 플랜에서 전체 기능 사용 가능\n- API Key Git 노출 절대 금지"
-    },
-    {
-      "name": "slack-mcp",
-      "display_name": "Slack MCP",
-      "category": "생산성 & 협업",
-      "status": "unverified",
-      "api_key": "required",
-      "operation_type": "integration",
-      "website": "https://slack.com",
-      "api_docs": "https://api.slack.com/apps",
-      "github": "https://github.com/modelcontextprotocol/servers",
-      "description": "Slack 채널 검색·메시지 전송·워크플로우 실행 (Slack 공식)",
-      "features": [
-        "메시지전송",
-        "채널검색",
-        "워크플로우"
-      ],
-      "supported_clients": [
-        "claude-cli",
-        "claude-desktop"
-      ],
-      "content": "## 소개\n\nSlack 공식 MCP 서버. Claude가 Slack 채널을 검색하고 메시지를 전송하거나 워크플로우를 실행할 수 있습니다.\n\n## Claude CLI 설정\n\n```json\n\"slack\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"@modelcontextprotocol/server-slack\"\n  ],\n  \"env\": {\n    \"SLACK_BOT_TOKEN\": \"xoxb-YOUR_BOT_TOKEN\",\n    \"SLACK_TEAM_ID\": \"YOUR_TEAM_ID\"\n  }\n}\n```\n\n## 주의사항\n- Slack App 생성 및 Bot Token 발급 필요: https://api.slack.com/apps\n- 필요 권한 스코프: `channels:read`, `chat:write`, `im:read` 등\n- Bot Token(`xoxb-`) Git 노출 절대 금지\n- 유료 Slack 플랜에서 일부 기능 제한될 수 있음"
-    },
-    {
-      "name": "google-ads",
-      "display_name": "Google Ads MCP",
-      "category": "커머스 & 마케팅",
-      "status": "unverified",
-      "api_key": "required",
-      "operation_type": "automation",
-      "website": "https://ads.google.com",
-      "api_docs": "https://developers.google.com/google-ads/api/docs/first-call/overview",
-      "github": "https://github.com/google-marketing-solutions/google_ads_mcp",
-      "description": "Google Ads 캠페인 생성·성과 분석·키워드 리서치 자동화 (Google 공식)",
-      "features": [
-        "캠페인관리",
-        "성과분석",
-        "키워드리서치",
-        "광고자동화"
-      ],
-      "supported_clients": [
-        "claude-cli",
-        "claude-desktop"
-      ],
-      "content": "## 소개\n\nGoogle 공식 MCP 서버. Google Ads API를 통해 캠페인 생성, 성과 분석, 키워드 리서치 등 광고 작업을 자동화합니다. Python 환경 필요.\n\n## Claude CLI 설정\n\n```json\n\"google-ads\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"uvx\",\n    \"--from\",\n    \"google-ads-mcp\",\n    \"google-ads-mcp\"\n  ],\n  \"env\": {\n    \"GOOGLE_ADS_DEVELOPER_TOKEN\": \"YOUR_DEVELOPER_TOKEN\",\n    \"GOOGLE_ADS_CLIENT_ID\": \"YOUR_CLIENT_ID\",\n    \"GOOGLE_ADS_CLIENT_SECRET\": \"YOUR_CLIENT_SECRET\",\n    \"GOOGLE_ADS_REFRESH_TOKEN\": \"YOUR_REFRESH_TOKEN\",\n    \"GOOGLE_ADS_LOGIN_CUSTOMER_ID\": \"YOUR_CUSTOMER_ID\"\n  }\n}\n```\n\n## 주의사항\n- Python + uv 패키지 매니저 설치 필요: `pip install uv`\n- Google Ads API 개발자 토큰 신청 필요 (Google Ads 계정 필요)\n- OAuth2 인증 설정 필요 (Client ID, Secret, Refresh Token)\n- 모든 자격증명 Git 노출 절대 금지"
-    },
-    {
-      "name": "meta-ads",
-      "display_name": "Meta Ads MCP",
-      "category": "커머스 & 마케팅",
-      "status": "unverified",
-      "api_key": "required",
-      "operation_type": "automation",
-      "website": "https://business.facebook.com",
-      "api_docs": "https://developers.facebook.com/apps",
-      "github": "https://github.com/pipeboard-co/meta-ads-mcp",
-      "description": "Facebook·Instagram 광고 캠페인·성과·오디언스 관리 자동화",
-      "features": [
-        "광고캠페인",
-        "성과분석",
-        "오디언스",
-        "Instagram"
-      ],
-      "supported_clients": [
-        "claude-cli",
-        "claude-desktop"
-      ],
-      "content": "## 소개\n\nMeta(Facebook/Instagram) 광고 플랫폼 MCP 서버. 광고 캠페인 생성, 성과 분석, 오디언스 관리 등을 Claude에서 직접 수행할 수 있습니다.\n\n## Claude CLI 설정\n\n```json\n\"meta-ads\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"meta-ads-mcp\"\n  ],\n  \"env\": {\n    \"META_ACCESS_TOKEN\": \"YOUR_META_ACCESS_TOKEN\",\n    \"META_AD_ACCOUNT_ID\": \"act_YOUR_AD_ACCOUNT_ID\"\n  }\n}\n```\n\n## 주의사항\n- Meta for Developers에서 앱 생성 및 Access Token 발급 필요\n- `META_AD_ACCOUNT_ID` 형식: `act_` 접두어 포함\n- Access Token Git 노출 절대 금지\n- Meta Marketing API 약관 동의 필요"
-    },
-    {
-      "name": "shopify",
-      "display_name": "Shopify Admin MCP",
-      "category": "커머스 & 마케팅",
-      "status": "unverified",
-      "api_key": "required",
-      "operation_type": "integration",
-      "website": "https://shopify.com",
-      "api_docs": "https://admin.shopify.com/settings/apps/development",
-      "description": "Shopify 상품·주문·고객·재고·분석을 AI로 직접 관리 (Shopify 내장 MCP)",
-      "features": [
-        "상품관리",
-        "주문관리",
-        "고객관리",
-        "재고관리"
-      ],
-      "supported_clients": [
-        "claude-cli",
-        "claude-desktop"
-      ],
-      "content": "## 소개\n\nSummer '25 Edition 이후 모든 Shopify 스토어에 `/api/mcp` 엔드포인트가 기본 내장되어 있습니다. 별도 앱 설치 없이 스토어 URL로 바로 연결됩니다.\n\n## Claude CLI 설정 (Remote MCP)\n\n```json\n\"shopify\": {\n  \"type\": \"http\",\n  \"url\": \"https://YOUR_STORE.myshopify.com/api/mcp\",\n  \"headers\": {\n    \"X-Shopify-Access-Token\": \"YOUR_ADMIN_API_TOKEN\"\n  }\n}\n```\n\n## 주의사항\n- Shopify Admin API 액세스 토큰 발급: 스토어 관리자 → 앱 → 개발자 설정\n- `YOUR_STORE`를 실제 스토어 서브도메인으로 교체\n- Admin API Token Git 노출 절대 금지\n- Summer '25 Edition(2025년 여름) 이상 Shopify 플랜 필요"
+      "researched_at": "2026-04-19",
+      "content": "# QuickBooks Online MCP\n\n## 소개\n\nIntuit 공식 QuickBooks Online MCP 서버.\n대차대조표·손익계산서·현금흐름표 등 재무보고서 조회, 전표 입력, 세금 처리, 고객·거래 관리 등\n소규모 회계 업무 전반을 AI가 직접 수행할 수 있게 해준다.\n\n## 주요 기능\n\n- 재무보고서 조회 (대차대조표·손익계산서·현금흐름표)\n- 전표·인보이스 생성·수정\n- 세금·고객·벤더 관리\n- 143개 도구로 QuickBooks 기능 전반 접근\n\n## 사용법\n\n1. Intuit Developer 계정에서 앱 생성.\n2. OAuth2 자격증명 발급: `Client ID`·`Client Secret`.\n3. Refresh Token 및 `Realm ID` 확보.\n4. 설정 env에 5개 변수 기입: `QB_CLIENT_ID`·`QB_CLIENT_SECRET`·`QB_REFRESH_TOKEN`·`QB_REALM_ID`·`QB_ENVIRONMENT`.\n\n## 기타\n\n- `QB_ENVIRONMENT`: `production` 또는 `sandbox` (테스트 시 sandbox 사용).\n- 자격증명 Git 노출 절대 금지.\n- QuickBooks Online 유료 구독 필요.\n\n## Claude CLI 설정\n\n```json\n\"quickbooks\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"quickbooks-online-mcp-server\"\n  ],\n  \"env\": {\n    \"QB_CLIENT_ID\": \"YOUR_CLIENT_ID\",\n    \"QB_CLIENT_SECRET\": \"YOUR_CLIENT_SECRET\",\n    \"QB_REFRESH_TOKEN\": \"YOUR_REFRESH_TOKEN\",\n    \"QB_REALM_ID\": \"YOUR_REALM_ID\",\n    \"QB_ENVIRONMENT\": \"production\"\n  }\n}\n```\n\n## Claude Desktop 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"quickbooks\": {\n      \"command\": \"cmd\",\n      \"args\": [\n        \"/c\",\n        \"npx\",\n        \"-y\",\n        \"quickbooks-online-mcp-server\"\n      ],\n      \"env\": {\n        \"QB_CLIENT_ID\": \"YOUR_CLIENT_ID\",\n        \"QB_CLIENT_SECRET\": \"YOUR_CLIENT_SECRET\",\n        \"QB_REFRESH_TOKEN\": \"YOUR_REFRESH_TOKEN\",\n        \"QB_REALM_ID\": \"YOUR_REALM_ID\",\n        \"QB_ENVIRONMENT\": \"production\"\n      }\n    }\n  }\n}\n```"
     },
     {
       "name": "stripe",
       "display_name": "Stripe MCP",
-      "category": "커머스 & 마케팅",
-      "status": "unverified",
+      "category": "금융 & 비즈니스",
+      "operation_type": "collaboration",
       "api_key": "required",
-      "operation_type": "integration",
       "website": "https://stripe.com",
+      "docs": "https://docs.stripe.com/mcp",
       "dashboard": "https://dashboard.stripe.com",
       "api_docs": "https://dashboard.stripe.com/apikeys",
       "github": "https://github.com/stripe/agent-toolkit",
@@ -442,16 +165,431 @@
         "claude-cli",
         "claude-desktop"
       ],
-      "content": "## 소개\n\nStripe 공식 MCP 서버. 결제, 구독, 고객, 인보이스 등 20개 이상의 Stripe 도구를 Claude에서 직접 사용할 수 있습니다.\n\n## Claude CLI 설정\n\n```json\n\"stripe\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"@stripe/mcp\",\n    \"--tools=all\"\n  ],\n  \"env\": {\n    \"STRIPE_SECRET_KEY\": \"sk_live_YOUR_STRIPE_SECRET_KEY\"\n  }\n}\n```\n\n## 주의사항\n- Stripe Secret Key(`sk_live_` 또는 `sk_test_`) Git 노출 절대 금지\n- 개발 시 테스트 키(`sk_test_`) 사용 권장\n- `--tools=all`: 모든 Stripe 도구 활성화 (필요한 도구만 지정도 가능)\n- 실제 결제 처리 가능 — 운영 키 사용 시 주의"
+      "researched_at": "2026-04-19",
+      "content": "# Stripe MCP\n\n## 소개\n\nStripe 공식 MCP 서버 (`@stripe/mcp`).\n결제·구독·고객·인보이스 등 20개 이상의 Stripe 도구를 Claude에서 직접 호출할 수 있어\n이커머스·SaaS 결제 처리를 대화형으로 관리하거나 문서 기반 가이드를 즉시 조회 가능.\n\n## 주요 기능\n\n- 결제·환불·분쟁 처리\n- 구독 생성·변경·취소\n- 고객·결제수단 관리\n- 인보이스 발행·조회\n- Stripe 공식 문서 실시간 검색\n\n## 사용법\n\n1. Stripe Dashboard → Developers → API keys에서 Secret Key 발급.\n2. 개발 중에는 테스트 키(`sk_test_`) 사용 권장.\n3. 설정 env `STRIPE_SECRET_KEY`에 기입.\n4. `--tools=all`로 전체 도구 활성 또는 필요한 도구만 지정.\n\n## 기타\n\n- Secret Key(`sk_live_` 또는 `sk_test_`) Git 노출 절대 금지.\n- 실제 결제 처리가 가능하므로 운영 키 사용 시 조작 실수 주의.\n- 일부 도구는 해당 Stripe 계정 권한·활성화 상태에 따라 제한.\n\n## Claude CLI 설정\n\n```json\n\"stripe\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"@stripe/mcp\",\n    \"--tools=all\"\n  ],\n  \"env\": {\n    \"STRIPE_SECRET_KEY\": \"sk_live_YOUR_STRIPE_SECRET_KEY\"\n  }\n}\n```\n\n## Claude Desktop 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"stripe\": {\n      \"command\": \"cmd\",\n      \"args\": [\n        \"/c\",\n        \"npx\",\n        \"-y\",\n        \"@stripe/mcp\",\n        \"--tools=all\"\n      ],\n      \"env\": {\n        \"STRIPE_SECRET_KEY\": \"sk_live_YOUR_STRIPE_SECRET_KEY\"\n      }\n    }\n  }\n}\n```"
+    },
+    {
+      "name": "mindsdb",
+      "display_name": "MindsDB MCP",
+      "category": "데이터 & DB",
+      "operation_type": "collaboration",
+      "api_key": "required",
+      "website": "https://mindsdb.com",
+      "docs": "https://docs.mindsdb.com",
+      "github": "https://github.com/mindsdb/mindsdb",
+      "description": "Oracle, PostgreSQL, MongoDB, Snowflake 등 멀티 DB를 통합하여 AI로 연결",
+      "features": [
+        "멀티DB",
+        "PostgreSQL",
+        "MongoDB",
+        "Snowflake",
+        "AI쿼리"
+      ],
+      "supported_clients": [
+        "claude-cli",
+        "claude-desktop"
+      ],
+      "researched_at": "2026-04-19",
+      "content": "# MindsDB MCP\n\n## 소개\n\n여러 데이터베이스를 통합해 하나의 인터페이스로 제공하는 MindsDB의 MCP 서버.\nOracle·PostgreSQL·MongoDB·Snowflake 등 이종 DB를 단일 MCP로 묶어 AI가 크로스 쿼리를 수행할 수 있고,\nML 모델을 통한 예측·분류도 AI 대화 흐름 안에서 직접 호출 가능.\n\n## 주요 기능\n\n- 다중 DB 통합 조회·쿼리\n- 자연어 기반 SQL 생성\n- ML 모델 생성·학습·추론 호출\n- MindsDB Cloud 또는 자체 호스팅 모두 지원\n\n## 사용법\n\n1. MindsDB Cloud 계정 생성 또는 자체 서버 구축.\n2. 연결할 외부 DB별 Connection 등록(MindsDB UI 또는 SQL).\n3. 설정 env에 `MINDSDB_HOST`·`MINDSDB_USER`·`MINDSDB_PASSWORD` 기입.\n\n## 기타\n\n- DB 자격증명 Git 노출 주의.\n- 연결할 DB마다 별도 설정 필요 — MindsDB 내부에서 통합 구성.\n\n## Claude CLI 설정\n\n```json\n\"mindsdb\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"@mindsdb/mcp-server\"\n  ],\n  \"env\": {\n    \"MINDSDB_HOST\": \"YOUR_MINDSDB_HOST\",\n    \"MINDSDB_USER\": \"YOUR_USERNAME\",\n    \"MINDSDB_PASSWORD\": \"YOUR_PASSWORD\"\n  }\n}\n```\n\n## Claude Desktop 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"mindsdb\": {\n      \"command\": \"cmd\",\n      \"args\": [\n        \"/c\",\n        \"npx\",\n        \"-y\",\n        \"@mindsdb/mcp-server\"\n      ],\n      \"env\": {\n        \"MINDSDB_HOST\": \"YOUR_MINDSDB_HOST\",\n        \"MINDSDB_USER\": \"YOUR_USERNAME\",\n        \"MINDSDB_PASSWORD\": \"YOUR_PASSWORD\"\n      }\n    }\n  }\n}\n```"
+    },
+    {
+      "name": "postgres",
+      "display_name": "PostgreSQL MCP",
+      "category": "데이터 & DB",
+      "operation_type": "information",
+      "api_key": "required",
+      "website": "https://www.postgresql.org",
+      "docs": "https://github.com/modelcontextprotocol/servers/blob/main/src/postgres/README.md",
+      "github": "https://github.com/modelcontextprotocol/servers/tree/main/src/postgres",
+      "description": "PostgreSQL 데이터베이스 스키마 조회 및 읽기 전용 쿼리 실행 (Anthropic 공식)",
+      "features": [
+        "DB쿼리",
+        "스키마조회",
+        "PostgreSQL"
+      ],
+      "supported_clients": [
+        "claude-cli",
+        "claude-desktop"
+      ],
+      "researched_at": "2026-04-19",
+      "content": "# PostgreSQL MCP\n\n## 소개\n\nAnthropic 공식 레퍼런스 MCP 서버.\nPostgreSQL 데이터베이스에 연결해 스키마 구조를 조회하고 읽기 전용 SQL 쿼리를 실행한다.\n실시간 데이터 확인·분석용으로 적합하며, 기본 설정에서는 데이터 수정이 불가능해 안전성이 높다.\n\n## 주요 기능\n\n- 스키마(테이블·컬럼·제약) 조회\n- 읽기 전용 SELECT 쿼리 실행\n- 결과 테이블을 AI에 바로 전달\n- 단일 connection string으로 간편 등록\n\n## 사용법\n\n1. 연결 문자열 준비: `postgresql://[user[:password]@][host][:port][/dbname]`.\n2. 설정 args 끝에 연결 문자열을 그대로 기입.\n3. 프로덕션 DB 직접 연결 시 읽기 전용 계정 사용 권장.\n\n## 기타\n\n- 연결 문자열에 비밀번호가 포함되므로 Git 노출 주의 (`.mcp.json`을 `.gitignore`에 포함).\n- SSL·SSH 터널 등 추가 연결 옵션은 환경변수로 설정.\n\n## Claude CLI 설정\n\n```json\n\"postgres\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"@modelcontextprotocol/server-postgres\",\n    \"postgresql://localhost/mydb\"\n  ]\n}\n```\n\n## Claude Desktop 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"postgres\": {\n      \"command\": \"cmd\",\n      \"args\": [\n        \"/c\",\n        \"npx\",\n        \"-y\",\n        \"@modelcontextprotocol/server-postgres\",\n        \"postgresql://localhost/mydb\"\n      ]\n    }\n  }\n}\n```"
+    },
+    {
+      "name": "supabase",
+      "display_name": "Supabase MCP",
+      "category": "데이터 & DB",
+      "operation_type": "collaboration",
+      "api_key": "required",
+      "website": "https://supabase.com",
+      "docs": "https://supabase.com/docs/guides/getting-started/mcp",
+      "dashboard": "https://supabase.com/dashboard",
+      "api_docs": "https://supabase.com/dashboard/account/tokens",
+      "github": "https://github.com/supabase-community/supabase-mcp",
+      "description": "Supabase 공식 MCP — 프로젝트·테이블·Edge Functions·Storage를 AI로 직접 관리",
+      "features": [
+        "PostgreSQL",
+        "Edge Functions",
+        "Storage",
+        "Auth",
+        "BaaS"
+      ],
+      "supported_clients": [
+        "claude-cli",
+        "claude-desktop"
+      ],
+      "researched_at": "2026-04-19",
+      "content": "# Supabase MCP\n\n## 소개\n\nSupabase 공식 MCP 서버.\nSupabase가 제공하는 PostgreSQL DB·Edge Functions·Storage·Auth를 AI가 직접 관리할 수 있다.\n프로젝트 목록 조회부터 테이블 스키마 변경, SQL 실행, 스토리지 버킷 관리까지 한 세트로 제공.\n\n## 주요 기능\n\n- Supabase 프로젝트·조직 조회\n- 테이블·스키마 생성·수정·삭제\n- SQL 쿼리 실행\n- Edge Functions 배포·호출\n- Storage 버킷 관리\n\n## 사용법\n\n1. Supabase Dashboard → Account → Tokens에서 Personal Access Token(PAT) 발급.\n2. 설정 args에 `--access-token=YOUR_PAT` 전달 또는 env `SUPABASE_ACCESS_TOKEN`에 기입.\n3. 특정 프로젝트 범위로 제한하려면 `--project-ref=...` 추가.\n\n## 기타\n\n- PAT Git 노출 절대 금지.\n- 운영 프로젝트 직접 조작이 가능하므로 쓰기 명령 실행 전 범위 확인 권장.\n- 읽기 전용 모드는 `--read-only` 플래그로 설정 가능.\n\n## Claude CLI 설정\n\n```json\n\"supabase\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"@supabase/mcp-server-supabase\",\n    \"--access-token=YOUR_SUPABASE_PAT\"\n  ]\n}\n```\n\n## Claude Desktop 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"supabase\": {\n      \"command\": \"cmd\",\n      \"args\": [\n        \"/c\",\n        \"npx\",\n        \"-y\",\n        \"@supabase/mcp-server-supabase\",\n        \"--access-token=YOUR_SUPABASE_PAT\"\n      ]\n    }\n  }\n}\n```"
+    },
+    {
+      "name": "notebooklm",
+      "display_name": "NotebookLM MCP",
+      "category": "문서 & 지식관리",
+      "operation_type": "collaboration",
+      "api_key": "none",
+      "website": "https://notebooklm.google.com",
+      "description": "NotebookLM 노트 연동 — 문서 분석 및 리서치 작업 지원",
+      "features": [
+        "문서분석",
+        "리서치",
+        "노트관리"
+      ],
+      "supported_clients": [
+        "claude-cli",
+        "claude-desktop"
+      ],
+      "researched_at": "2026-04-19",
+      "content": "# notebooklm MCP\n\n## 소개\n\nGoogle NotebookLM 노트와 연동하는 MCP 서버.\n문서·PDF·웹페이지를 소스로 등록한 NotebookLM 노트를 AI가 직접 조회·질의할 수 있어\n리서치 중심 프로젝트에서 자료 분석·요약에 활용된다.\n\n## 주요 기능\n\n- NotebookLM 노트 접근 및 내용 조회\n- 소스 기반 질의응답\n- 리서치 자료 요약·추출\n\n## 사용법\n\nNotebookLM 계정에서 노트를 구성한 뒤 MCP를 등록하여 대화에서 해당 노트 컨텍스트를 요청.\n\n## 기타\n\n- 이 패키지(`notebooklm-mcp`)는 `1.2.1`에서 안정 동작이 확인된 이력이 있음. 상위 버전에서 문제 발생 시 `@1.2.1` 고정 사용 고려.\n\n## Claude CLI 설정\n\n```json\n\"notebooklm\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"notebooklm-mcp\"\n  ]\n}\n```\n\n## Claude Desktop 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"notebooklm\": {\n      \"command\": \"cmd\",\n      \"args\": [\n        \"/c\",\n        \"npx\",\n        \"-y\",\n        \"notebooklm-mcp\"\n      ]\n    }\n  }\n}\n```"
+    },
+    {
+      "name": "notion",
+      "display_name": "Notion MCP",
+      "category": "문서 & 지식관리",
+      "operation_type": "collaboration",
+      "api_key": "required",
+      "website": "https://notion.so",
+      "docs": "https://developers.notion.com/docs/mcp",
+      "api_docs": "https://www.notion.so/my-integrations",
+      "github": "https://github.com/makenotion/notion-mcp-server",
+      "description": "Notion 페이지·데이터베이스 읽기·쓰기·검색 자동화",
+      "features": [
+        "페이지관리",
+        "데이터베이스",
+        "문서검색"
+      ],
+      "supported_clients": [
+        "claude-cli",
+        "claude-desktop"
+      ],
+      "researched_at": "2026-04-19",
+      "content": "# notion MCP\n\n## 소개\n\nNotion 공식 MCP 서버. Claude가 Notion 페이지·데이터베이스를 직접 읽고 쓰며 검색할 수 있다.\n회의록·작업 일지 자동화, 데이터베이스 기반 정보 관리, 지식베이스 확장에 적합.\nIntegration Token 기반 인증이라 권한 범위를 정밀하게 제어할 수 있다.\n\n## 주요 기능\n\n- 페이지·블록 생성·수정·삭제\n- 데이터베이스 쿼리·필터·정렬\n- 문서 전체 검색 및 관련 페이지 조회\n- 댓글·사용자 정보 조회\n\n## 사용법\n\n1. Notion Integrations(`https://www.notion.so/my-integrations`)에서 New integration 생성 → Internal Integration Token 발급.\n2. 사용할 페이지·DB에 Integration 연결(Share → Add connections) — 필요한 범위에만 연결 권장.\n3. 발급 토큰을 설정 env `NOTION_TOKEN`에 기입.\n\n## 기타\n\n- `command`가 `npx` 직접 호출(cmd /c 래퍼 없음) — Windows 환경에서 PATH 설정 확인 필요.\n- 전체 워크스페이스 공유는 지양, 필요한 페이지에만 Integration 연결.\n- Claude Desktop에서 claude.ai Notion MCP(OAuth 방식)를 이미 사용 중이면 중복 등록 주의 — 둘 중 하나만 유지.\n\n## Claude CLI 설정\n\n```json\n\"notionApi\": {\n  \"command\": \"npx\",\n  \"args\": [\n    \"-y\",\n    \"@notionhq/notion-mcp-server\"\n  ],\n  \"env\": {\n    \"NOTION_TOKEN\": \"YOUR_NOTION_TOKEN\"\n  }\n}\n```\n\n## Claude Desktop 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"notionApi\": {\n      \"command\": \"npx\",\n      \"args\": [\n        \"-y\",\n        \"@notionhq/notion-mcp-server\"\n      ],\n      \"env\": {\n        \"NOTION_TOKEN\": \"YOUR_NOTION_TOKEN\"\n      }\n    }\n  }\n}\n```"
+    },
+    {
+      "name": "image-gen",
+      "display_name": "Image Generation MCP",
+      "category": "미디어",
+      "operation_type": "generation",
+      "api_key": "required",
+      "website": "https://aistudio.google.com",
+      "docs": "https://ai.google.dev/gemini-api/docs/image-generation",
+      "api_docs": "https://aistudio.google.com/app/apikey",
+      "description": "Google Gemini API 기반 이미지 생성 — 텍스트 프롬프트로 이미지 생성 및 저장",
+      "features": [
+        "이미지생성",
+        "텍스트-이미지",
+        "Gemini"
+      ],
+      "supported_clients": [
+        "claude-cli",
+        "claude-desktop"
+      ],
+      "researched_at": "2026-04-19",
+      "content": "# image-gen MCP\n\n## 소개\n\nGoogle Gemini API 기반 이미지 생성을 MCP로 연결하는 서버.\nAI가 직접 텍스트 프롬프트로 이미지를 생성해 로컬에 저장할 수 있어\n콘텐츠 자동 제작·프로토타입 UI 목업 생성에 유용.\n\n## 주요 기능\n\n- 텍스트 프롬프트 → 이미지 생성\n- 로컬 경로 저장\n- 스타일·해상도 지정\n- Gemini API 기반 최신 모델 사용\n\n## 사용법\n\n1. Google AI Studio(`https://aistudio.google.com/app/apikey`)에서 API 키 발급.\n2. 설정 env `GOOGLE_API_KEY`에 기입.\n3. \"배너 이미지 만들어줘\"처럼 자연어 프롬프트로 호출.\n\n## 기타\n\n- Gemini 이미지 생성은 무료 티어 한도 존재 — 대량 생성 시 비용 발생.\n- 생성된 이미지 저장 경로 사전 확인 필요.\n- API 키 Git 노출 주의.\n\n## Claude CLI 설정\n\n```json\n\"image-gen\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"image-generation-mcp\"\n  ],\n  \"env\": {\n    \"GOOGLE_API_KEY\": \"YOUR_GOOGLE_API_KEY\"\n  }\n}\n```\n\n## Claude Desktop 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"image-gen\": {\n      \"command\": \"cmd\",\n      \"args\": [\n        \"/c\",\n        \"npx\",\n        \"-y\",\n        \"image-generation-mcp\"\n      ],\n      \"env\": {\n        \"GOOGLE_API_KEY\": \"YOUR_GOOGLE_API_KEY\"\n      }\n    }\n  }\n}\n```"
+    },
+    {
+      "name": "youtube",
+      "display_name": "YouTube Data MCP",
+      "category": "미디어",
+      "operation_type": "information",
+      "api_key": "required",
+      "website": "https://youtube.com",
+      "docs": "https://developers.google.com/youtube/v3",
+      "api_docs": "https://console.cloud.google.com",
+      "description": "YouTube 영상 검색·메타데이터 조회·자막 추출 — Claude가 직접 YouTube 콘텐츠 분석",
+      "features": [
+        "영상검색",
+        "자막추출",
+        "메타데이터"
+      ],
+      "supported_clients": [
+        "claude-cli",
+        "claude-desktop"
+      ],
+      "researched_at": "2026-04-19",
+      "content": "# youtube MCP\n\n## 소개\n\nYouTube Data API v3를 MCP로 연결하는 서버.\nAI가 영상 검색, 메타데이터 조회, 자막(트랜스크립트) 추출을 직접 수행해\n영상 요약·번역·콘텐츠 분석 작업에 활용 가능.\n\n## 주요 기능\n\n- 영상 키워드 검색\n- 영상 메타데이터 조회(제목·채널·조회수·게시일)\n- 자막 추출 (언어 지정 가능)\n- 채널·플레이리스트 정보 조회\n\n## 사용법\n\n1. Google Cloud Console에서 YouTube Data API v3 활성화 → API 키 발급.\n2. 설정 env `YOUTUBE_API_KEY`에 기입.\n3. 자막 언어는 `YOUTUBE_TRANSCRIPT_LANG`로 지정 (`ko`, `en` 등).\n\n## 기타\n\n- YouTube Data API는 일일 할당량(Quota)이 있어 대량 요청 시 한도 초과 주의.\n- API 키 Git 노출 주의.\n\n## Claude CLI 설정\n\n```json\n\"youtube\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"youtube-data-mcp-server\"\n  ],\n  \"env\": {\n    \"YOUTUBE_API_KEY\": \"YOUR_YOUTUBE_API_KEY\",\n    \"YOUTUBE_TRANSCRIPT_LANG\": \"ko\"\n  }\n}\n```\n\n## Claude Desktop 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"youtube\": {\n      \"command\": \"cmd\",\n      \"args\": [\n        \"/c\",\n        \"npx\",\n        \"-y\",\n        \"youtube-data-mcp-server\"\n      ],\n      \"env\": {\n        \"YOUTUBE_API_KEY\": \"YOUR_YOUTUBE_API_KEY\",\n        \"YOUTUBE_TRANSCRIPT_LANG\": \"ko\"\n      }\n    }\n  }\n}\n```"
+    },
+    {
+      "name": "fetch",
+      "display_name": "Fetch MCP",
+      "category": "브라우저 & 자동화",
+      "operation_type": "information",
+      "api_key": "none",
+      "website": "https://modelcontextprotocol.io",
+      "docs": "https://github.com/modelcontextprotocol/servers/blob/main/src/fetch/README.md",
+      "github": "https://github.com/modelcontextprotocol/servers/tree/main/src/fetch",
+      "description": "MCP 공식 레퍼런스 Fetch 서버 — URL을 가져와 마크다운으로 변환해 AI에 전달",
+      "features": [
+        "URL조회",
+        "HTML파싱",
+        "마크다운변환",
+        "단일페이지"
+      ],
+      "supported_clients": [
+        "claude-cli",
+        "claude-desktop"
+      ],
+      "researched_at": "2026-04-19",
+      "content": "# Fetch MCP\n\n## 소개\n\nAnthropic/Model Context Protocol이 제공하는 공식 레퍼런스 Fetch 서버.\n지정한 URL의 페이지를 가져와 HTML을 마크다운으로 정리하여 AI에 전달한다.\nPuppeteer·Playwright 같은 브라우저 자동화가 필요 없는 단순 페이지 조회에 가볍고 빠르다.\nPython 기반(`mcp-server-fetch`)이라 `uvx` 실행 방식을 사용.\n\n## 주요 기능\n\n- URL → 페이지 본문 수집\n- HTML 자동 마크다운 변환\n- 로봇 규칙(robots.txt) 존중\n- User-Agent·쿠키 옵션 지원\n\n## 사용법\n\n1. `pip install uv`로 uv 설치.\n2. 설정에 `uvx mcp-server-fetch` 등록.\n3. 별도 API 키 불필요 — 요청 시 URL만 지정.\n\n## 기타\n\n- JavaScript 렌더링이 필요한 SPA는 결과가 비어 보일 수 있음 — 이 경우 Puppeteer·Playwright 사용.\n- 대량 반복 요청은 대상 서버에 부담 — 크롤링 목적은 firecrawl 쪽이 적합.\n\n## Claude CLI 설정\n\n```json\n\"fetch\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"uvx\",\n    \"mcp-server-fetch\"\n  ]\n}\n```\n\n## Claude Desktop 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"fetch\": {\n      \"command\": \"cmd\",\n      \"args\": [\n        \"/c\",\n        \"uvx\",\n        \"mcp-server-fetch\"\n      ]\n    }\n  }\n}\n```"
+    },
+    {
+      "name": "fiddler",
+      "display_name": "Fiddler MCP",
+      "category": "브라우저 & 자동화",
+      "operation_type": "command",
+      "api_key": "optional",
+      "website": "https://www.telerik.com/fiddler",
+      "docs": "https://www.telerik.com/fiddler/fiddler-everywhere/documentation/mcp-server/fiddler-mcp-server",
+      "dashboard": "https://www.telerik.com/fiddler/fiddler-everywhere",
+      "description": "Fiddler Everywhere 웹 디버깅 프록시의 MCP — HTTP/HTTPS 트래픽 캡처·분석·Rule 생성을 AI로 제어",
+      "features": [
+        "HTTP디버깅",
+        "프록시",
+        "API테스트",
+        "트래픽분석"
+      ],
+      "supported_clients": [
+        "claude-cli",
+        "claude-desktop"
+      ],
+      "researched_at": "2026-04-19",
+      "content": "# Fiddler MCP\n\n## 소개\n\nProgress Telerik의 Fiddler Everywhere에 내장된 MCP 서버.\nFiddler가 캡처한 HTTP/HTTPS·WebSocket·gRPC 트래픽을 AI가 직접 조회·필터·분석하고,\nRule Builder를 통해 요청 응답을 동적으로 조작할 수 있게 해준다.\nAPI 디버깅·E2E 검증·자동 응답 시나리오 설계에 특화.\n\n## 주요 기능\n\n- 캡처된 트래픽 세션 조회·필터\n- 세션 상세(헤더·바디) 분석\n- Rule Builder로 자동 응답 생성\n- API Composer를 AI 프롬프트로 제어\n- TLS 1.3 지원, Windows/macOS/Linux 크로스 플랫폼\n\n## 사용법\n\n1. Fiddler Everywhere 최신 버전 설치 및 실행 (MCP 내장 버전 필요).\n2. 앱 내 MCP 서버 설정에서 노출 포트·접근 토큰 확인 (공식 docs 참조).\n3. Claude 설정의 `url`을 해당 localhost 엔드포인트로, 토큰이 있는 경우 헤더로 기입.\n\n## 기타\n\n- Fiddler Everywhere 앱이 실행 중이어야 MCP 연결 가능.\n- 포트·인증 방식은 앱 버전에 따라 다를 수 있으므로 공식 docs의 현재 설정 확인 필수.\n- 민감한 트래픽이 포함되므로 접근 토큰 발급 시 외부 노출 주의.\n\n## Claude CLI 설정\n\n```json\n\"fiddler\": {\n  \"type\": \"http\",\n  \"url\": \"http://localhost:YOUR_FIDDLER_MCP_PORT/mcp\",\n  \"headers\": {\n    \"Authorization\": \"Bearer YOUR_FIDDLER_ACCESS_TOKEN\"\n  }\n}\n```\n\n## Claude Desktop 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"fiddler\": {\n      \"type\": \"http\",\n      \"url\": \"http://localhost:YOUR_FIDDLER_MCP_PORT/mcp\",\n      \"headers\": {\n        \"Authorization\": \"Bearer YOUR_FIDDLER_ACCESS_TOKEN\"\n      }\n    }\n  }\n}\n```"
+    },
+    {
+      "name": "firecrawl",
+      "display_name": "Firecrawl MCP",
+      "category": "브라우저 & 자동화",
+      "operation_type": "information",
+      "api_key": "required",
+      "website": "https://firecrawl.dev",
+      "docs": "https://docs.firecrawl.dev/mcp-server",
+      "dashboard": "https://firecrawl.dev/app",
+      "api_docs": "https://firecrawl.dev/app/api-keys",
+      "github": "https://github.com/mendableai/firecrawl-mcp-server",
+      "description": "Firecrawl 웹 크롤링 MCP — 대규모 사이트 스크래핑·구조화 추출을 API 한 번으로",
+      "features": [
+        "웹크롤링",
+        "사이트스크래핑",
+        "구조화추출",
+        "JS렌더링"
+      ],
+      "supported_clients": [
+        "claude-cli",
+        "claude-desktop"
+      ],
+      "researched_at": "2026-04-19",
+      "content": "# Firecrawl MCP\n\n## 소개\n\nFirecrawl(`firecrawl.dev`)의 공식 MCP 서버.\nJavaScript 렌더링·사이트 전체 크롤링·구조화 데이터 추출까지 한 번의 호출로 처리하는 SaaS 크롤러.\n단순 URL 조회(fetch)로는 부족한 대규모·복잡한 스크래핑 작업에 적합.\n\n## 주요 기능\n\n- 단일 URL 스크래핑 (JS 렌더링 포함)\n- 사이트 전체 크롤링 (깊이·범위 제어)\n- LLM 기반 구조화 데이터 추출\n- 마크다운·HTML·링크 맵 출력\n\n## 사용법\n\n1. Firecrawl 계정 생성 후 API Key 발급(`firecrawl.dev/app/api-keys`).\n2. 설정 env `FIRECRAWL_API_KEY`에 기입.\n3. 크롤링 범위·출력 포맷은 요청 시 옵션으로 지정.\n\n## 기타\n\n- API 사용량에 따라 요금 발생 — 대량 크롤링 전 요금제 확인.\n- API 키 Git 노출 주의.\n- 단순 페이지 조회는 fetch MCP가 더 가볍다.\n\n## Claude CLI 설정\n\n```json\n\"firecrawl\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"firecrawl-mcp\"\n  ],\n  \"env\": {\n    \"FIRECRAWL_API_KEY\": \"YOUR_FIRECRAWL_API_KEY\"\n  }\n}\n```\n\n## Claude Desktop 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"firecrawl\": {\n      \"command\": \"cmd\",\n      \"args\": [\n        \"/c\",\n        \"npx\",\n        \"-y\",\n        \"firecrawl-mcp\"\n      ],\n      \"env\": {\n        \"FIRECRAWL_API_KEY\": \"YOUR_FIRECRAWL_API_KEY\"\n      }\n    }\n  }\n}\n```"
+    },
+    {
+      "name": "playwright",
+      "display_name": "Playwright MCP",
+      "category": "브라우저 & 자동화",
+      "operation_type": "command",
+      "api_key": "none",
+      "website": "https://playwright.dev",
+      "docs": "https://github.com/microsoft/playwright-mcp#readme",
+      "github": "https://github.com/microsoft/playwright-mcp",
+      "description": "Microsoft 공식 Playwright 브라우저 자동화 MCP — Chromium/Firefox/WebKit 동시 지원",
+      "features": [
+        "브라우저자동화",
+        "크로스브라우저",
+        "접근성트리기반",
+        "E2E테스트"
+      ],
+      "supported_clients": [
+        "claude-cli",
+        "claude-desktop"
+      ],
+      "researched_at": "2026-04-19",
+      "content": "# Playwright MCP\n\n## 소개\n\nMicrosoft가 공식 관리하는 Playwright 기반 브라우저 자동화 MCP 서버.\nChromium·Firefox·WebKit 세 엔진을 모두 지원하고, 접근성 트리(Accessibility tree)를 통해\n시각적 스크린샷 없이도 구조화된 페이지 정보를 AI에 전달하는 점이 Puppeteer와 차별화된다.\nE2E 테스트·스크래핑·웹 자동화 폭넓게 활용.\n\n## 주요 기능\n\n- Chromium/Firefox/WebKit 교차 자동화\n- 접근성 트리 기반 페이지 구조 제공\n- 클릭·입력·네비게이션·네트워크 제어\n- 스크린샷·PDF 생성\n- 비주얼 모드·헤드리스 모드 전환\n\n## 사용법\n\n1. 설정에 `@playwright/mcp` 추가.\n2. 최초 실행 시 Playwright가 브라우저 바이너리를 자동 다운로드.\n3. 별도 API 키 불필요 — 로컬 실행.\n\n## 기타\n\n- 첫 실행 시 브라우저 바이너리(수백 MB) 다운로드 소요.\n- Puppeteer와 기능이 중복되므로 둘 중 하나만 등록하는 편이 권장.\n- 접근성 트리 방식은 스크린샷보다 토큰 효율이 높다.\n\n## Claude CLI 설정\n\n```json\n\"playwright\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"@playwright/mcp\"\n  ]\n}\n```\n\n## Claude Desktop 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"playwright\": {\n      \"command\": \"cmd\",\n      \"args\": [\n        \"/c\",\n        \"npx\",\n        \"-y\",\n        \"@playwright/mcp\"\n      ]\n    }\n  }\n}\n```"
+    },
+    {
+      "name": "puppeteer",
+      "display_name": "Puppeteer MCP",
+      "category": "브라우저 & 자동화",
+      "operation_type": "command",
+      "api_key": "none",
+      "website": "https://pptr.dev",
+      "docs": "https://github.com/modelcontextprotocol/servers/blob/main/src/puppeteer/README.md",
+      "github": "https://github.com/modelcontextprotocol/servers/tree/main/src/puppeteer",
+      "description": "Chromium 브라우저 자동화 — 웹 스크래핑·스크린샷·폼 자동 입력·SPA 크롤링",
+      "features": [
+        "브라우저자동화",
+        "웹스크래핑",
+        "스크린샷"
+      ],
+      "supported_clients": [
+        "claude-cli",
+        "claude-desktop"
+      ],
+      "researched_at": "2026-04-19",
+      "content": "# puppeteer MCP\n\n## 소개\n\nChromium 브라우저 자동화를 MCP로 연결하는 공식 레퍼런스 서버.\nAI가 페이지 내비게이션·스크래핑·스크린샷·폼 자동 입력을 실행할 수 있고,\nJavaScript 렌더링이 필요한 SPA도 처리 가능.\n\n## 주요 기능\n\n- 페이지 열기·내비게이션\n- DOM 조회·텍스트 추출\n- 폼 입력·클릭 등 상호작용\n- 스크린샷 캡처\n- 동적 페이지(SPA) 렌더링 결과 수집\n\n## 사용법\n\n등록 후 웹 스크래핑·자동화 작업에서 AI가 자동 호출.\n최초 실행 시 Chromium이 자동 다운로드되므로 네트워크·저장공간 확보 필요.\n\n## 기타\n\n- 헤드리스 환경(서버)에서는 추가 설정 필요할 수 있음.\n- 대량 스크래핑 시 대상 사이트 robots·약관 준수.\n\n## Claude CLI 설정\n\n```json\n\"puppeteer\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"@modelcontextprotocol/server-puppeteer\"\n  ]\n}\n```\n\n## Claude Desktop 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"puppeteer\": {\n      \"command\": \"cmd\",\n      \"args\": [\n        \"/c\",\n        \"npx\",\n        \"-y\",\n        \"@modelcontextprotocol/server-puppeteer\"\n      ]\n    }\n  }\n}\n```"
+    },
+    {
+      "name": "atlassian",
+      "display_name": "Atlassian MCP",
+      "category": "생산성 & 협업",
+      "operation_type": "collaboration",
+      "api_key": "required",
+      "website": "https://www.atlassian.com",
+      "docs": "https://support.atlassian.com/atlassian-rovo-mcp-server/docs",
+      "api_docs": "https://id.atlassian.com/manage-profile/security/api-tokens",
+      "description": "Jira 이슈 및 Confluence 페이지 생성·조회·일괄 처리 (Atlassian 공식 Remote MCP)",
+      "features": [
+        "Jira이슈",
+        "Confluence페이지",
+        "프로젝트관리"
+      ],
+      "supported_clients": [
+        "claude-cli",
+        "claude-desktop"
+      ],
+      "researched_at": "2026-04-19",
+      "content": "# Atlassian MCP\n\n## 소개\n\nAtlassian 공식 Remote MCP 서버.\nJira 이슈 관리와 Confluence 문서 작업을 Claude에서 직접 수행 가능.\n로컬 npm 설치 없이 URL과 API 토큰만으로 연결된다.\n\n## 주요 기능\n\n- Jira 이슈 생성·수정·조회·전이\n- Confluence 페이지 생성·편집·검색\n- 프로젝트·스페이스 일괄 조회\n- 사용자·그룹 정보 접근\n\n## 사용법\n\n1. Atlassian Account(`https://id.atlassian.com/manage-profile/security/api-tokens`)에서 API Token 발급.\n2. 설정의 `url`을 `https://mcp.atlassian.com/v1/sse`로 기입.\n3. `Authorization` 헤더에 `Bearer {API_TOKEN}` 형식으로 기입.\n4. 또는 CLI 명령으로 추가: `claude mcp add --transport http atlassian https://mcp.atlassian.com/v1/sse`.\n\n## 기타\n\n- Atlassian Cloud 계정 전용 (Server/Data Center 미지원).\n- API Token Git 노출 절대 금지.\n- Remote MCP이므로 네트워크 단절 시 사용 불가.\n\n## Claude CLI 설정\n\n```json\n\"atlassian\": {\n  \"type\": \"http\",\n  \"url\": \"https://mcp.atlassian.com/v1/sse\",\n  \"headers\": {\n    \"Authorization\": \"Bearer YOUR_ATLASSIAN_API_TOKEN\"\n  }\n}\n```\n\n## Claude Desktop 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"atlassian\": {\n      \"type\": \"http\",\n      \"url\": \"https://mcp.atlassian.com/v1/sse\",\n      \"headers\": {\n        \"Authorization\": \"Bearer YOUR_ATLASSIAN_API_TOKEN\"\n      }\n    }\n  }\n}\n```"
+    },
+    {
+      "name": "linear",
+      "display_name": "Linear MCP",
+      "category": "생산성 & 협업",
+      "operation_type": "collaboration",
+      "api_key": "required",
+      "website": "https://linear.app",
+      "docs": "https://linear.app/docs/mcp",
+      "api_docs": "https://linear.app/settings/api",
+      "github": "https://github.com/jerhadf/linear-mcp-server",
+      "description": "Linear 이슈·프로젝트·팀 관리 및 GraphQL API 연동",
+      "features": [
+        "이슈관리",
+        "프로젝트관리",
+        "팀협업"
+      ],
+      "supported_clients": [
+        "claude-cli",
+        "claude-desktop"
+      ],
+      "researched_at": "2026-04-19",
+      "content": "# Linear MCP\n\n## 소개\n\nLinear 공식 Remote MCP 서버.\nClaude가 Linear 이슈를 생성·조회·업데이트하고 프로젝트·팀을 관리할 수 있다.\n로컬 npm 설치 없이 URL과 API 키만으로 즉시 연결.\n\n## 주요 기능\n\n- 이슈 CRUD 및 상태 변경\n- 프로젝트·팀·사이클 조회\n- 코멘트·태그·라벨 관리\n- GraphQL API 기반 세밀한 질의\n\n## 사용법\n\n1. Linear Settings → API(`https://linear.app/settings/api`)에서 API Key 발급.\n2. 설정의 `url`을 `https://mcp.linear.app/sse`로 기입.\n3. `Authorization` 헤더에 `Bearer {API_KEY}` 형식으로 기입.\n4. 또는 CLI 명령으로 추가 가능: `claude mcp add --transport http linear https://mcp.linear.app/sse`.\n\n## 기타\n\n- API Key Git 노출 절대 금지.\n- Linear 유료 플랜에서 전체 기능 사용 가능.\n- Remote MCP이므로 네트워크 단절 시 사용 불가.\n\n## Claude CLI 설정\n\n```json\n\"linear\": {\n  \"type\": \"http\",\n  \"url\": \"https://mcp.linear.app/sse\",\n  \"headers\": {\n    \"Authorization\": \"Bearer YOUR_LINEAR_API_KEY\"\n  }\n}\n```\n\n## Claude Desktop 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"linear\": {\n      \"type\": \"http\",\n      \"url\": \"https://mcp.linear.app/sse\",\n      \"headers\": {\n        \"Authorization\": \"Bearer YOUR_LINEAR_API_KEY\"\n      }\n    }\n  }\n}\n```"
+    },
+    {
+      "name": "slack-mcp",
+      "display_name": "Slack MCP",
+      "category": "생산성 & 협업",
+      "operation_type": "collaboration",
+      "api_key": "required",
+      "website": "https://slack.com",
+      "docs": "https://api.slack.com/docs",
+      "api_docs": "https://api.slack.com/apps",
+      "github": "https://github.com/modelcontextprotocol/servers/tree/main/src/slack",
+      "description": "Slack 채널 검색·메시지 전송·워크플로우 실행 (Slack 공식)",
+      "features": [
+        "메시지전송",
+        "채널검색",
+        "워크플로우"
+      ],
+      "supported_clients": [
+        "claude-cli",
+        "claude-desktop"
+      ],
+      "researched_at": "2026-04-19",
+      "content": "# Slack MCP\n\n## 소개\n\nSlack 공식 MCP 서버.\n채널 검색, 메시지 전송, 워크플로우 실행을 AI가 직접 수행하여\n팀 커뮤니케이션을 대화형으로 자동화한다.\n\n## 주요 기능\n\n- 채널·DM 메시지 조회·전송\n- 키워드·사용자 기반 메시지 검색\n- 워크플로우·슬래시 명령 실행\n- 팀·사용자 정보 조회\n\n## 사용법\n\n1. Slack API(`https://api.slack.com/apps`)에서 App 생성.\n2. 필요 권한 스코프 부여: `channels:read`·`chat:write`·`im:read` 등 작업 범위에 맞게.\n3. Bot Token(`xoxb-`) 발급 후 `SLACK_BOT_TOKEN`에 기입.\n4. Team ID 확인 후 `SLACK_TEAM_ID`에 기입.\n\n## 기타\n\n- Bot Token Git 노출 절대 금지.\n- 유료 Slack 플랜에서 일부 기능(히스토리 검색 등) 제한될 수 있음.\n- 권한 스코프는 최소 범위 원칙 적용.\n\n## Claude CLI 설정\n\n```json\n\"slack\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"@modelcontextprotocol/server-slack\"\n  ],\n  \"env\": {\n    \"SLACK_BOT_TOKEN\": \"xoxb-YOUR_BOT_TOKEN\",\n    \"SLACK_TEAM_ID\": \"YOUR_TEAM_ID\"\n  }\n}\n```\n\n## Claude Desktop 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"slack\": {\n      \"command\": \"cmd\",\n      \"args\": [\n        \"/c\",\n        \"npx\",\n        \"-y\",\n        \"@modelcontextprotocol/server-slack\"\n      ],\n      \"env\": {\n        \"SLACK_BOT_TOKEN\": \"xoxb-YOUR_BOT_TOKEN\",\n        \"SLACK_TEAM_ID\": \"YOUR_TEAM_ID\"\n      }\n    }\n  }\n}\n```"
+    },
+    {
+      "name": "google-ads",
+      "display_name": "Google Ads MCP",
+      "category": "커머스 & 마케팅",
+      "operation_type": "command",
+      "api_key": "required",
+      "website": "https://ads.google.com",
+      "docs": "https://developers.google.com/google-ads/api/docs/first-call/overview",
+      "api_docs": "https://developers.google.com/google-ads/api/docs/first-call/overview",
+      "github": "https://github.com/google-marketing-solutions/google_ads_mcp",
+      "description": "Google Ads 캠페인 생성·성과 분석·키워드 리서치 자동화 (Google 공식)",
+      "features": [
+        "캠페인관리",
+        "성과분석",
+        "키워드리서치",
+        "광고자동화"
+      ],
+      "supported_clients": [
+        "claude-cli",
+        "claude-desktop"
+      ],
+      "researched_at": "2026-04-19",
+      "content": "# Google Ads MCP\n\n## 소개\n\nGoogle 공식 Google Ads MCP 서버.\nGoogle Ads API를 통해 캠페인 생성·수정, 성과 분석, 키워드 리서치 등을 AI가 직접 수행.\n`uvx` 실행 방식이라 Python 환경이 필요.\n\n## 주요 기능\n\n- 캠페인·광고 그룹·광고 CRUD\n- 성과 리포트 조회 (노출·클릭·전환·비용)\n- 키워드 리서치 및 제안\n- 대규모 변경 일괄 처리\n\n## 사용법\n\n1. `pip install uv`로 uv 설치.\n2. Google Ads 개발자 토큰 신청 (Google Ads 계정 필요).\n3. OAuth2 인증 설정 — Client ID·Client Secret·Refresh Token 발급.\n4. 설정 env에 5개 자격증명 기입: `DEVELOPER_TOKEN`·`CLIENT_ID`·`CLIENT_SECRET`·`REFRESH_TOKEN`·`LOGIN_CUSTOMER_ID`.\n\n## 기타\n\n- Python + `uv` 사전 설치 필수 (npx 방식과 다름).\n- 개발자 토큰 승인까지 시간이 걸릴 수 있음 — 사전 신청 권장.\n- 모든 자격증명 Git 노출 절대 금지.\n\n## Claude CLI 설정\n\n```json\n\"google-ads\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"uvx\",\n    \"--from\",\n    \"google-ads-mcp\",\n    \"google-ads-mcp\"\n  ],\n  \"env\": {\n    \"GOOGLE_ADS_DEVELOPER_TOKEN\": \"YOUR_DEVELOPER_TOKEN\",\n    \"GOOGLE_ADS_CLIENT_ID\": \"YOUR_CLIENT_ID\",\n    \"GOOGLE_ADS_CLIENT_SECRET\": \"YOUR_CLIENT_SECRET\",\n    \"GOOGLE_ADS_REFRESH_TOKEN\": \"YOUR_REFRESH_TOKEN\",\n    \"GOOGLE_ADS_LOGIN_CUSTOMER_ID\": \"YOUR_CUSTOMER_ID\"\n  }\n}\n```\n\n## Claude Desktop 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"google-ads\": {\n      \"command\": \"cmd\",\n      \"args\": [\n        \"/c\",\n        \"uvx\",\n        \"--from\",\n        \"google-ads-mcp\",\n        \"google-ads-mcp\"\n      ],\n      \"env\": {\n        \"GOOGLE_ADS_DEVELOPER_TOKEN\": \"YOUR_DEVELOPER_TOKEN\",\n        \"GOOGLE_ADS_CLIENT_ID\": \"YOUR_CLIENT_ID\",\n        \"GOOGLE_ADS_CLIENT_SECRET\": \"YOUR_CLIENT_SECRET\",\n        \"GOOGLE_ADS_REFRESH_TOKEN\": \"YOUR_REFRESH_TOKEN\",\n        \"GOOGLE_ADS_LOGIN_CUSTOMER_ID\": \"YOUR_CUSTOMER_ID\"\n      }\n    }\n  }\n}\n```"
+    },
+    {
+      "name": "meta-ads",
+      "display_name": "Meta Ads MCP",
+      "category": "커머스 & 마케팅",
+      "operation_type": "command",
+      "api_key": "required",
+      "website": "https://business.facebook.com",
+      "docs": "https://developers.facebook.com/docs/marketing-apis",
+      "api_docs": "https://developers.facebook.com/apps",
+      "github": "https://github.com/pipeboard-co/meta-ads-mcp",
+      "description": "Facebook·Instagram 광고 캠페인·성과·오디언스 관리 자동화",
+      "features": [
+        "광고캠페인",
+        "성과분석",
+        "오디언스",
+        "Instagram"
+      ],
+      "supported_clients": [
+        "claude-cli",
+        "claude-desktop"
+      ],
+      "researched_at": "2026-04-19",
+      "content": "# Meta Ads MCP\n\n## 소개\n\nMeta(Facebook/Instagram) 광고 플랫폼을 MCP로 연결하는 커뮤니티 서버.\nClaude가 광고 캠페인 생성·수정, 성과 지표 조회, 오디언스 관리 등을 직접 수행할 수 있어\n광고 운영 루틴을 대화형으로 자동화한다.\n\n## 주요 기능\n\n- 캠페인·광고 세트·광고 CRUD\n- 노출·클릭·전환 등 성과 데이터 조회\n- 오디언스 세그먼트 관리\n- Facebook/Instagram 광고 공통 지원\n\n## 사용법\n\n1. Meta for Developers(`developers.facebook.com/apps`)에서 앱 생성.\n2. Marketing API 접근 권한 신청 및 Access Token 발급.\n3. 광고 계정 ID 확인 (`act_` 접두어 포함 형식).\n4. 설정 env에 `META_ACCESS_TOKEN`·`META_AD_ACCOUNT_ID` 기입.\n\n## 기타\n\n- Meta Marketing API 약관 동의 필요.\n- Access Token Git 노출 절대 금지.\n- 토큰 만료 주기가 있으므로 장기 운영 시 갱신 루틴 필요.\n\n## Claude CLI 설정\n\n```json\n\"meta-ads\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"meta-ads-mcp\"\n  ],\n  \"env\": {\n    \"META_ACCESS_TOKEN\": \"YOUR_META_ACCESS_TOKEN\",\n    \"META_AD_ACCOUNT_ID\": \"act_YOUR_AD_ACCOUNT_ID\"\n  }\n}\n```\n\n## Claude Desktop 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"meta-ads\": {\n      \"command\": \"cmd\",\n      \"args\": [\n        \"/c\",\n        \"npx\",\n        \"-y\",\n        \"meta-ads-mcp\"\n      ],\n      \"env\": {\n        \"META_ACCESS_TOKEN\": \"YOUR_META_ACCESS_TOKEN\",\n        \"META_AD_ACCOUNT_ID\": \"act_YOUR_AD_ACCOUNT_ID\"\n      }\n    }\n  }\n}\n```"
+    },
+    {
+      "name": "shopify",
+      "display_name": "Shopify Admin MCP",
+      "category": "커머스 & 마케팅",
+      "operation_type": "collaboration",
+      "api_key": "required",
+      "website": "https://shopify.com",
+      "docs": "https://shopify.dev/docs/api/mcp",
+      "api_docs": "https://admin.shopify.com/settings/apps/development",
+      "description": "Shopify 상품·주문·고객·재고·분석을 AI로 직접 관리 (Shopify 내장 MCP)",
+      "features": [
+        "상품관리",
+        "주문관리",
+        "고객관리",
+        "재고관리"
+      ],
+      "supported_clients": [
+        "claude-cli",
+        "claude-desktop"
+      ],
+      "researched_at": "2026-04-19",
+      "content": "# Shopify Admin MCP\n\n## 소개\n\nSummer '25 Edition 이후 모든 Shopify 스토어에 `/api/mcp` 엔드포인트가 기본 내장.\n별도 앱 설치 없이 스토어 URL만으로 상품·주문·고객·재고·분석 데이터를 AI가 직접 조회·수정 가능.\n이커머스 운영 자동화에 바로 쓸 수 있는 가장 빠른 경로.\n\n## 주요 기능\n\n- 상품 CRUD (생성·수정·삭제·조회)\n- 주문 조회·상태 변경·환불\n- 고객 관리·세그먼트 조회\n- 재고 현황·입출고 관리\n- 매출·전환 분석 조회\n\n## 사용법\n\n1. 스토어 관리자 → 앱 → 개발자 설정에서 Admin API 액세스 토큰 발급.\n2. 스토어 서브도메인 확인 (`YOUR_STORE.myshopify.com`).\n3. 설정의 `url`을 실제 스토어 URL로 교체, `X-Shopify-Access-Token` 헤더에 토큰 기입.\n\n## 기타\n\n- Summer '25 Edition(2025년 여름) 이상 Shopify 플랜 필요.\n- Admin API Token Git 노출 절대 금지.\n- Remote HTTP MCP이므로 네트워크 단절 시 사용 불가.\n\n## Claude CLI 설정\n\n```json\n\"shopify\": {\n  \"type\": \"http\",\n  \"url\": \"https://YOUR_STORE.myshopify.com/api/mcp\",\n  \"headers\": {\n    \"X-Shopify-Access-Token\": \"YOUR_ADMIN_API_TOKEN\"\n  }\n}\n```\n\n## Claude Desktop 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"shopify\": {\n      \"type\": \"http\",\n      \"url\": \"https://YOUR_STORE.myshopify.com/api/mcp\",\n      \"headers\": {\n        \"X-Shopify-Access-Token\": \"YOUR_ADMIN_API_TOKEN\"\n      }\n    }\n  }\n}\n```"
     },
     {
       "name": "gmail",
       "display_name": "Gmail MCP",
       "category": "커뮤니케이션",
-      "status": "verified",
+      "operation_type": "collaboration",
       "api_key": "required",
-      "operation_type": "integration",
       "website": "https://mail.google.com",
+      "docs": "https://developers.google.com/gmail/api",
       "api_docs": "https://console.cloud.google.com",
       "github": "https://github.com/gongrzhe/server-gmail-autoauth-mcp",
       "description": "Gmail 읽기·작성·발송 자동화 — Claude가 직접 메일 조회 및 발송",
@@ -464,18 +602,19 @@
         "claude-cli",
         "claude-desktop"
       ],
-      "content": "# gmail MCP\n\n## 소개\nGmail 읽기/쓰기/검색 자동화. Claude가 직접 메일 조회, 작성, 발송 가능.\n\n## 적합한 프로젝트\n- 이메일 자동화 프로젝트\n- 메일 기반 업무 처리\n- **전역보다 특정 프로젝트 로컬 등록 권장**\n\n## API 키\n**필요** — Google OAuth2 클라이언트 자격증명\n- 발급: https://console.cloud.google.com → API 및 서비스 → 사용자 인증 정보\n\n## 현재 검증 버전\n`@gongrzhe/server-gmail-autoauth-mcp@latest`\n\n## Claude CLI 설정\n\n```json\n\"gmail\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"@gongrzhe/server-gmail-autoauth-mcp\"\n  ],\n  \"env\": {\n    \"GOOGLE_CLIENT_ID\": \"YOUR_CLIENT_ID\",\n    \"GOOGLE_CLIENT_SECRET\": \"YOUR_CLIENT_SECRET\",\n    \"GOOGLE_REDIRECT_URI\": \"http://localhost:3000/oauth2callback\"\n  }\n}\n```\n\n## 주의사항\n- OAuth 최초 실행 시 브라우저 인증 필요\n- `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` 절대 Git 노출 금지\n- claude.ai Gmail MCP와 **중복 등록 시 충돌 가능** → 둘 중 하나만 사용\n\n## 대안\nclaude.ai 연동 Gmail MCP (Claude Desktop에서 인증) 사용 시 이 파일 불필요\n\n## 업데이트 이력\n- 초기 등록: 2025-03-13"
+      "researched_at": "2026-04-19",
+      "content": "# gmail MCP\n\n## 소개\n\nGmail API를 통해 AI가 직접 메일을 읽고 쓰고 보낼 수 있게 해주는 MCP 서버.\n메일 기반 업무 처리·자동 응답·보고 메일 자동화 같은 이메일 중심 작업에 적합.\n보안상 전역 등록보다 필요한 프로젝트에 로컬 등록하는 편이 안전하다.\n\n## 주요 기능\n\n- 받은편지함·특정 라벨 메일 조회\n- 본문·첨부파일 읽기\n- 메일 작성 및 발송\n- 검색 쿼리 기반 필터링\n\n## 사용법\n\n1. Google Cloud Console(`https://console.cloud.google.com`)에서 프로젝트 생성 → API 및 서비스 → Gmail API 활성화.\n2. 사용자 인증 정보(OAuth 2.0 클라이언트 ID) 발급 — `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`.\n3. 리디렉션 URI에 `http://localhost:3000/oauth2callback` 추가.\n4. MCP 설정의 env에 기입 후 최초 실행 시 브라우저 OAuth 인증.\n\n## 기타\n\n- 클라이언트 ID·시크릿은 Git 노출 절대 금지 (`.gitignore` 확인).\n- Claude Desktop에서 claude.ai Gmail MCP(OAuth)를 이미 사용 중이면 중복 등록 시 충돌 가능 — 둘 중 하나만 사용.\n\n## Claude CLI 설정\n\n```json\n\"gmail\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"@gongrzhe/server-gmail-autoauth-mcp\"\n  ],\n  \"env\": {\n    \"GOOGLE_CLIENT_ID\": \"YOUR_CLIENT_ID\",\n    \"GOOGLE_CLIENT_SECRET\": \"YOUR_CLIENT_SECRET\",\n    \"GOOGLE_REDIRECT_URI\": \"http://localhost:3000/oauth2callback\"\n  }\n}\n```\n\n## Claude Desktop 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"gmail\": {\n      \"command\": \"cmd\",\n      \"args\": [\n        \"/c\",\n        \"npx\",\n        \"-y\",\n        \"@gongrzhe/server-gmail-autoauth-mcp\"\n      ],\n      \"env\": {\n        \"GOOGLE_CLIENT_ID\": \"YOUR_CLIENT_ID\",\n        \"GOOGLE_CLIENT_SECRET\": \"YOUR_CLIENT_SECRET\",\n        \"GOOGLE_REDIRECT_URI\": \"http://localhost:3000/oauth2callback\"\n      }\n    }\n  }\n}\n```"
     },
     {
       "name": "github",
       "display_name": "GitHub MCP",
       "category": "코드 & 버전관리",
-      "status": "verified",
+      "operation_type": "collaboration",
       "api_key": "required",
-      "operation_type": "integration",
       "website": "https://github.com",
+      "docs": "https://docs.github.com/en/rest",
       "api_docs": "https://github.com/settings/tokens",
-      "github": "https://github.com/modelcontextprotocol/servers",
+      "github": "https://github.com/modelcontextprotocol/servers/tree/main/src/github",
       "description": "GitHub 저장소 조회·이슈 관리·PR 생성·코드 검색 자동화",
       "features": [
         "저장소관리",
@@ -487,16 +626,17 @@
         "claude-cli",
         "claude-desktop"
       ],
-      "content": "# github MCP\n\n## 소개\nGitHub 저장소 조회, 이슈 생성/관리, PR 생성, 코드 검색 자동화.\nClaude가 직접 GitHub API와 상호작용 가능.\n\n## 적합한 프로젝트\n- GitHub 기반 협업 프로젝트\n- 이슈/PR 자동화가 필요한 프로젝트\n- CI/CD 워크플로우 관리\n\n## API 키\n**필요** — GitHub Personal Access Token\n- 발급: GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)\n- 필요 권한: `repo`, `issues`, `pull_requests`\n\n## 현재 검증 버전\n`@modelcontextprotocol/server-github@latest`\n\n## Claude CLI 설정\n\n```json\n\"github\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"@modelcontextprotocol/server-github\"\n  ],\n  \"env\": {\n    \"GITHUB_PERSONAL_ACCESS_TOKEN\": \"YOUR_GITHUB_TOKEN\"\n  }\n}\n```\n\n## 주의사항\n- Token 권한은 **최소 필요 범위만** 부여 (보안 원칙)\n- Token 만료일 설정 권장 (무기한 토큰 지양)\n- `.mcp.json` Git 커밋 시 토큰 노출 절대 금지\n\n## 업데이트 이력\n- 초기 등록: 2025-03-13"
+      "researched_at": "2026-04-19",
+      "content": "# github MCP\n\n## 소개\n\nGitHub API를 MCP로 연결하는 공식 레퍼런스 서버.\n저장소 조회, 이슈·PR 생성 및 관리, 코드 검색을 AI가 직접 수행하여\n협업 리포지토리의 관리 루틴을 자동화한다.\n\n## 주요 기능\n\n- 저장소·파일·브랜치 조회\n- 이슈 생성·코멘트·라벨 관리\n- PR 생성·리뷰·머지\n- 코드 검색 (조직 전체 또는 특정 저장소)\n\n## 사용법\n\n1. GitHub Settings → Developer settings → Personal access tokens → Tokens (classic) 발급.\n2. 필요 권한 부여: `repo`, `issues`, `pull_requests` (작업 범위에 맞게 최소화).\n3. 설정 env `GITHUB_PERSONAL_ACCESS_TOKEN`에 기입.\n\n## 기타\n\n- Token 권한은 최소 필요 범위만 부여 (보안 원칙).\n- 만료일이 있는 토큰 사용 권장(무기한 토큰 지양).\n- `.mcp.json` Git 커밋 시 토큰 노출 절대 금지.\n\n## Claude CLI 설정\n\n```json\n\"github\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"@modelcontextprotocol/server-github\"\n  ],\n  \"env\": {\n    \"GITHUB_PERSONAL_ACCESS_TOKEN\": \"YOUR_GITHUB_TOKEN\"\n  }\n}\n```\n\n## Claude Desktop 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"github\": {\n      \"command\": \"cmd\",\n      \"args\": [\n        \"/c\",\n        \"npx\",\n        \"-y\",\n        \"@modelcontextprotocol/server-github\"\n      ],\n      \"env\": {\n        \"GITHUB_PERSONAL_ACCESS_TOKEN\": \"YOUR_GITHUB_TOKEN\"\n      }\n    }\n  }\n}\n```"
     },
     {
       "name": "aws",
       "display_name": "AWS API MCP",
       "category": "클라우드 & 인프라",
-      "status": "verified",
-      "api_key": "required",
       "operation_type": "infrastructure",
+      "api_key": "required",
       "website": "https://aws.amazon.com",
+      "docs": "https://awslabs.github.io/mcp",
       "dashboard": "https://console.aws.amazon.com",
       "api_docs": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html",
       "github": "https://github.com/awslabs/mcp",
@@ -512,38 +652,18 @@
         "claude-cli",
         "claude-desktop"
       ],
-      "content": "# aws MCP (awslabs.aws-api-mcp-server)\n\n## 소개\nAWS 서비스 API 직접 호출. S3, EC2, Lambda, DynamoDB 등 AWS 리소스 조회 및 관리.\nClaude가 AWS CLI 수준의 작업을 직접 수행 가능.\n\n## 적합한 프로젝트\n- AWS 인프라 관리 프로젝트\n- 서버리스 아키텍처 프로젝트\n- 클라우드 리소스 자동화\n\n## API 키\n**필요** — AWS IAM Access Key\n- 발급: AWS Console → IAM → 사용자 → 보안 자격증명 → 액세스 키 생성\n- 필요 권한: 작업 범위에 맞는 최소 권한 IAM 정책 적용\n\n## 현재 검증 버전\n`awslabs.aws-api-mcp-server@latest`\n- `uvx` 실행 방식 (pip 기반, npx와 다름)\n- Python 환경 필요\n\n## Claude CLI 설정\n\n```json\n\"awslabs.aws-api-mcp-server\": {\n  \"command\": \"uvx\",\n  \"args\": [\n    \"--from\",\n    \"awslabs.aws-api-mcp-server@latest\",\n    \"awslabs.aws-api-mcp-server\"\n  ],\n  \"env\": {\n    \"AWS_REGION\": \"ap-northeast-2\",\n    \"AWS_ACCESS_KEY_ID\": \"YOUR_ACCESS_KEY_ID\",\n    \"AWS_SECRET_ACCESS_KEY\": \"YOUR_SECRET_ACCESS_KEY\"\n  }\n}\n```\n\n## 주의사항\n- `uvx` 실행 → **Python + uv 패키지 매니저 설치 필요**\n  - 설치: `pip install uv` 또는 `winget install astral-sh.uv`\n- AWS 리전 기본값: `ap-northeast-2` (서울) — 필요에 따라 변경\n- IAM 키는 **최소 권한 원칙** 적용 필수\n- 액세스 키 Git 노출 절대 금지 → `.gitignore`에 `.mcp.json` 추가 권장\n- Windows에서 `uvx.exe` 경로 문제 발생 시 전체 경로 지정 필요\n\n## Windows 호환 버전\n\n```json\n\"awslabs.aws-api-mcp-server\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"uvx\",\n    \"--from\",\n    \"awslabs.aws-api-mcp-server@latest\",\n    \"awslabs.aws-api-mcp-server.exe\"\n  ],\n  \"env\": {\n    \"AWS_REGION\": \"ap-northeast-2\",\n    \"AWS_ACCESS_KEY_ID\": \"YOUR_ACCESS_KEY_ID\",\n    \"AWS_SECRET_ACCESS_KEY\": \"YOUR_SECRET_ACCESS_KEY\"\n  }\n}\n```\n\n## 업데이트 이력\n- 초기 등록: 2025-03-13"
-    },
-    {
-      "name": "claude-design",
-      "display_name": "Claude Code MCP 연동 가이드",
-      "category": "AI 도구 연동 가이드",
-      "status": "verified",
-      "api_key": "required",
-      "operation_type": "ai-assist",
-      "website": "https://claude.ai/code",
-      "github": "https://github.com/anthropics/claude-code",
-      "description": "Claude Code를 MCP 서버로 프로젝트에 연결 — 프로젝트 전용 AI 코딩 어시스턴트 설정",
-      "features": [
-        "코드생성",
-        "프로젝트전용",
-        "AI어시스턴트"
-      ],
-      "supported_clients": [
-        "claude-cli",
-        "claude-desktop"
-      ],
-      "content": "# Claude Design — MCP 보류 기록\n\n> 취지: Claude Design(2026-04-17 발표)의 MCP 연동 가능성을 검토하였으나 현재 미지원.\n> 향후 MCP 서버 공식 발표 시 이 파일을 실제 설정 가이드로 전환 예정.\n> 상세 조사 기록: `.Source-Files/library/claude-design-mcp-research.md`\n\n## 현재 상태\n\n**MCP 미지원** (2026-04-18 기준)\n\nClaude Design은 `claude.ai/design` 접근하는 웹 기반 디자인 도구.\nMCP 서버를 제공하지 않으므로 현재 `.mcp.json` 설정 불필요.\n\nClaude Code와의 현재 연동 방식:\n```\nClaude Design (디자인 완성) → 핸드오프 번들 → Claude Code (구현)\n```\n채팅 → MCP → Claude Design 제어 구조는 현재 없음.\n\n---\n\n# Claude Code — 프로젝트 전용 MCP 적용 설계\n\n## 문제 상황\n\n`npm install -g @anthropic-ai/claude-code` 실행 시 전역 Claude 설정(`~/.claude.json`)에\nMCP 항목이 자동 등록된다. 프로젝트 전용으로만 적용하고 싶어도 전역으로 들어간다.\n\n---\n\n## 방법 A — 전역 설치 → 복사 → 제거 (조건부 가능)\n\n```\n1. npm install -g @anthropic-ai/claude-code\n   → ~/.claude.json 의 mcpServers 에 항목 자동 추가됨\n\n2. ~/.claude.json 에서 추가된 JSON 항목 확인\n\n3. 해당 항목을 프로젝트 .mcp.json 의 \"mcpServers\" 안에 복사\n\n4. npm uninstall -g @anthropic-ai/claude-code\n   → 전역 항목 제거됨\n```\n\n### ⚠️ 주의 — 복사 후 반드시 npx 방식으로 변환\n\n전역 설치 시 생성되는 항목은 `command: \"claude\"` (전역 바이너리) 참조.\n전역 제거 후 `claude` 바이너리가 사라지므로 `.mcp.json` 항목이 **즉시 깨진다**.\n\n복사 후 아래 패턴으로 변환 필수 (Windows 기준):\n\n```json\n\"claude-code\": {\n  \"type\": \"stdio\",\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"@anthropic-ai/claude-code\",\n    \"--mcp\"\n  ],\n  \"env\": {\n    \"ANTHROPIC_API_KEY\": \"YOUR_ANTHROPIC_API_KEY\"\n  }\n}\n```\n\n> `cmd /c npx` 패턴: Windows 환경에서 `npx` 직접 호출 시 오류 발생하므로\n> 이 라이브러리의 모든 MCP 파일이 공통으로 사용하는 래퍼 방식.\n>\n> `ANTHROPIC_API_KEY`: MCP 서버로 실행 시 Claude API를 직접 호출하므로 필수.\n> 시스템 환경변수에 이미 설정돼 있으면 `\"env\": {}` 로 생략 가능.\n\n---\n\n## 방법 B — 전역 설치 없이 직접 작성 (권장)\n\n전역 설치·제거 과정 없이 처음부터 프로젝트 `.mcp.json`에 직접 작성.\n`npx -y`가 실행 시점에 패키지를 자동 다운로드하므로 전역 설치 불필요.\n\n```json\n{\n  \"mcpServers\": {\n    \"claude-code\": {\n      \"type\": \"stdio\",\n      \"command\": \"cmd\",\n      \"args\": [\n        \"/c\",\n        \"npx\",\n        \"-y\",\n        \"@anthropic-ai/claude-code\",\n        \"--mcp\"\n      ],\n      \"env\": {\n        \"ANTHROPIC_API_KEY\": \"YOUR_ANTHROPIC_API_KEY\"\n      }\n    }\n  }\n}\n```\n\n---\n\n## 적용 위치 비교\n\n| 위치 | 파일 | 적용 범위 |\n|------|------|-----------|\n| 전역 | `~/.claude.json` → `mcpServers` | 모든 프로젝트 |\n| 프로젝트 | `.mcp.json` → `mcpServers` | 해당 프로젝트만 |\n\n프로젝트 전용 적용은 **방법 B + `.mcp.json`** 사용이 가장 단순하다.\n\n---\n\n## 업데이트 이력\n\n- 초기 작성: 2026-04-18"
+      "researched_at": "2026-04-19",
+      "content": "# aws MCP\n\n## 소개\n\nAWS Labs가 제공하는 공식 AWS API MCP 서버(`awslabs.aws-api-mcp-server`).\nS3·EC2·Lambda·DynamoDB 등 AWS 리소스 조회·관리를 AI가 직접 수행할 수 있어\nAWS CLI 작업을 대화형으로 대체한다. `uvx` 실행 방식이라 Python 환경이 필요.\n\n## 주요 기능\n\n- AWS 리소스 조회 (S3 버킷·EC2 인스턴스·Lambda 함수 등)\n- 설정 변경·리소스 생성·삭제\n- IAM 정책 범위 내 AWS API 직접 호출\n- 서버리스 아키텍처 관리 자동화\n\n## 사용법\n\n1. `pip install uv` 또는 `winget install astral-sh.uv`로 uv 설치.\n2. AWS Console → IAM → 사용자 → 보안 자격증명 → 액세스 키 생성.\n3. 작업 범위에 맞는 최소 권한 IAM 정책 적용.\n4. 설정 env에 `AWS_REGION`·`AWS_ACCESS_KEY_ID`·`AWS_SECRET_ACCESS_KEY` 기입.\n\n## 기타\n\n- Python + `uv` 사전 설치 필수 (npx 방식과 다름).\n- AWS 리전 기본값 예시: `ap-northeast-2` (서울). 환경에 맞게 변경.\n- IAM 키 Git 노출 절대 금지 → `.mcp.json`은 `.gitignore`에 포함.\n- Windows에서 `uvx.exe` 경로 문제 발생 시 전체 경로 지정.\n\n## Claude CLI 설정\n\n```json\n\"awslabs.aws-api-mcp-server\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"uvx\",\n    \"--from\",\n    \"awslabs.aws-api-mcp-server@latest\",\n    \"awslabs.aws-api-mcp-server\"\n  ],\n  \"env\": {\n    \"AWS_REGION\": \"ap-northeast-2\",\n    \"AWS_ACCESS_KEY_ID\": \"YOUR_ACCESS_KEY_ID\",\n    \"AWS_SECRET_ACCESS_KEY\": \"YOUR_SECRET_ACCESS_KEY\"\n  }\n}\n```\n\n## Claude Desktop 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"awslabs.aws-api-mcp-server\": {\n      \"command\": \"cmd\",\n      \"args\": [\n        \"/c\",\n        \"uvx\",\n        \"--from\",\n        \"awslabs.aws-api-mcp-server@latest\",\n        \"awslabs.aws-api-mcp-server\"\n      ],\n      \"env\": {\n        \"AWS_REGION\": \"ap-northeast-2\",\n        \"AWS_ACCESS_KEY_ID\": \"YOUR_ACCESS_KEY_ID\",\n        \"AWS_SECRET_ACCESS_KEY\": \"YOUR_SECRET_ACCESS_KEY\"\n      }\n    }\n  }\n}\n```"
     },
     {
       "name": "memory",
       "display_name": "Memory MCP",
       "category": "AI 추론 & 메모리",
-      "status": "verified",
-      "api_key": "none",
       "operation_type": "ai-assist",
+      "api_key": "none",
       "website": "https://modelcontextprotocol.io",
-      "github": "https://github.com/modelcontextprotocol/servers",
+      "docs": "https://github.com/modelcontextprotocol/servers/blob/main/src/memory/README.md",
+      "github": "https://github.com/modelcontextprotocol/servers/tree/main/src/memory",
       "description": "세션 간 컨텍스트 영속 저장 — 프로젝트 지식·컨벤션·결정사항을 대화 간 기억",
       "features": [
         "세션기억",
@@ -554,17 +674,18 @@
         "claude-cli",
         "claude-desktop"
       ],
-      "content": "# memory MCP\n\n## 소개\n대화 간 컨텍스트(엔티티, 관계, 메모)를 영속적으로 저장.\n세션이 종료되어도 프로젝트 지식, 코딩 컨벤션, 결정 사항 등을 기억.\n\n## 적합한 프로젝트\n- 장기 진행 프로젝트\n- 여러 세션에 걸쳐 작업이 이어지는 경우\n- **전역 등록 강력 권장** (프로젝트 무관하게 항상 활성화)\n\n## API 키\n불필요\n\n## 현재 검증 버전\n`@latest` — 공식 Anthropic 패키지\n\n## Claude CLI 설정\n\n```json\n\"memory\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"@modelcontextprotocol/server-memory\"\n  ]\n}\n```\n\n## 주의사항\n- 잘못된 정보가 저장되면 이후 세션에서 지속 오염 → **주기적 정리 필요**\n- 세션 시작 시 `\"현재 저장된 memory 목록 보여줘\"` 로 상태 확인 권장\n- 저장 권장: 코딩 컨벤션, 기술 스택, API 엔드포인트\n- 저장 비권장: 임시 결정, 실험 중인 내용, 작업 진행 상태\n\n## 업데이트 이력\n- 초기 등록: 2025-03-13\n- 전역(.claude.json)으로 이동 완료: 2025-03-13"
+      "researched_at": "2026-04-19",
+      "content": "# memory MCP\n\n## 소개\n\n세션 간 컨텍스트(엔티티·관계·메모)를 영속적으로 저장하는 공식 레퍼런스 MCP 서버.\n프로젝트 지식·코딩 컨벤션·결정사항을 대화 종료 후에도 유지하여, 다음 세션에서 그대로 이어 작업할 수 있게 한다.\n장기 프로젝트, 여러 세션에 걸친 작업, 전역 상시 활성 목적에 적합.\n\n## 주요 기능\n\n- 엔티티(노드)·관계(엣지)·관찰(observation) 기반 지식 그래프 저장\n- 세션 종료 후에도 로컬 JSON으로 데이터 유지\n- 저장·조회·업데이트·삭제·검색 도구 제공\n- 로컬 실행·API 키 불필요\n\n## 사용법\n\n전역 설정(`.claude.json` / `claude_desktop_config.json`)에 등록하여 모든 프로젝트에서 상시 이용.\n세션 시작 시 \"현재 저장된 memory 목록 보여줘\"로 상태 확인 후 작업을 시작하는 것을 권장.\n\n저장 권장: 코딩 컨벤션, 기술 스택, 핵심 API 엔드포인트, 프로젝트 구조 결정 사항.\n저장 비권장: 임시 결정, 실험 중인 내용, 작업 진행 상태(진행상태는 WORKSPACE 등 다른 수단 사용).\n\n## 기타\n\n- 잘못된 정보가 저장되면 이후 세션까지 지속 오염되므로 주기적 정리 필요.\n\n## Claude CLI 설정\n\n```json\n\"memory\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"@modelcontextprotocol/server-memory\"\n  ]\n}\n```\n\n## Claude Desktop 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"memory\": {\n      \"command\": \"cmd\",\n      \"args\": [\n        \"/c\",\n        \"npx\",\n        \"-y\",\n        \"@modelcontextprotocol/server-memory\"\n      ]\n    }\n  }\n}\n```"
     },
     {
       "name": "sequential-thinking",
       "display_name": "Sequential Thinking MCP",
       "category": "AI 추론 & 메모리",
-      "status": "verified",
-      "api_key": "none",
       "operation_type": "ai-assist",
+      "api_key": "none",
       "website": "https://modelcontextprotocol.io",
-      "github": "https://github.com/modelcontextprotocol/servers",
+      "docs": "https://github.com/modelcontextprotocol/servers/blob/main/src/sequentialthinking/README.md",
+      "github": "https://github.com/modelcontextprotocol/servers/tree/main/src/sequentialthinking",
       "description": "복잡한 문제를 단계별로 분해해 순차적으로 추론 — 다단계 계획·아키텍처 설계·복잡한 디버깅",
       "features": [
         "단계별추론",
@@ -577,16 +698,17 @@
         "codex",
         "gemini-cli"
       ],
-      "content": "# sequential-thinking MCP\n\n## 소개\n복잡한 문제를 단계별로 분해해 순차적으로 추론. 다단계 계획, 로직 설계, 복잡한 디버깅 시 자동 활용.\n\n## 적합한 프로젝트\n- 복잡한 알고리즘 설계\n- 멀티스텝 워크플로우 구현\n- 아키텍처 설계\n- 모든 프로젝트 범용 적용 가능\n\n## API 키\n불필요\n\n## 현재 검증 버전\n`@latest` — 공식 Anthropic 패키지, 버전 고정 불필요\n\n## Claude CLI 설정\n\n```json\n\"sequential-thinking\": {\n  \"type\": \"stdio\",\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"@modelcontextprotocol/server-sequential-thinking\"\n  ],\n  \"env\": {},\n  \"disabled\": false\n}\n```\n\n## 주의사항\n- `\"disabled\": false` 명시 — 필요시 `true`로 임시 비활성화 가능\n- Thinking mode와 함께 사용 시 추론 품질 극대화\n\n## 업데이트 이력\n- 초기 등록: 2025-03-13"
+      "researched_at": "2026-04-19",
+      "content": "# sequential-thinking MCP\n\n## 소개\n\n복잡한 문제를 단계별 thought로 분해해 순차 추론을 수행하는 공식 레퍼런스 MCP 서버.\n다단계 계획 수립, 로직·아키텍처 설계, 멀티스텝 디버깅 시 AI가 자동으로 활용한다.\n범용 적용 가능하며 프로젝트에 관계없이 전역 등록을 권장.\n\n## 주요 기능\n\n- 단계(thought) 단위로 추론을 분해하여 중간 검증 가능\n- 가설 생성·검증·수정·분기·백트래킹 지원\n- Thinking mode와 결합 시 추론 품질 극대화\n- 로컬 실행·API 키 불필요\n\n## 사용법\n\n전역 설정(`.claude.json` / `claude_desktop_config.json` / `~/.codex/config.toml` 등)에 등록.\n복잡도가 높은 작업에서 AI가 자동 호출하므로 사용자가 직접 호출할 필요는 거의 없다.\n설정에서 `\"disabled\": true`로 임시 비활성화 가능.\n\n## 기타\n\n- 긴 thought 체인은 토큰 소모가 크므로 단순 작업에는 호출되지 않도록 두는 편이 경제적.\n\n## Claude CLI 설정\n\n```json\n\"sequential-thinking\": {\n  \"type\": \"stdio\",\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"@modelcontextprotocol/server-sequential-thinking\"\n  ],\n  \"env\": {},\n  \"disabled\": false\n}\n```\n\n## Claude Desktop 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"sequential-thinking\": {\n      \"command\": \"cmd\",\n      \"args\": [\n        \"/c\",\n        \"npx\",\n        \"-y\",\n        \"@modelcontextprotocol/server-sequential-thinking\"\n      ]\n    }\n  }\n}\n```\n\n## Codex 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"sequential-thinking\": {\n      \"command\": \"npx\",\n      \"args\": [\n        \"-y\",\n        \"@modelcontextprotocol/server-sequential-thinking\"\n      ]\n    }\n  }\n}\n```\n\n## Gemini CLI 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"sequential-thinking\": {\n      \"command\": \"npx\",\n      \"args\": [\n        \"-y\",\n        \"@modelcontextprotocol/server-sequential-thinking\"\n      ]\n    }\n  }\n}\n```"
     },
     {
       "name": "figma",
       "display_name": "Figma MCP",
       "category": "UI & 디자인",
-      "status": "unverified",
+      "operation_type": "collaboration",
       "api_key": "none",
-      "operation_type": "integration",
       "website": "https://figma.com",
+      "docs": "https://developers.figma.com/docs/figma-mcp-server",
       "dashboard": "https://www.figma.com/mcp-catalog",
       "api_docs": "https://developers.figma.com/docs/figma-mcp-server",
       "github": "https://github.com/figma/mcp-server-guide",
@@ -599,19 +721,17 @@
       ],
       "supported_clients": [
         "claude-cli",
-        "claude-desktop",
-        "codex",
-        "gemini-cli"
+        "claude-desktop"
       ],
-      "content": "## 소개\n\nFigma 공식 Remote MCP 서버. Claude가 Figma 디자인 파일에 직접 접근하여 코드를 생성하고, 컴포넌트·변수·레이아웃 정보를 추출하며, 캔버스를 직접 편집할 수 있습니다. 현재 베타 기간 중 무료 제공.\n\n## Claude CLI 설정 (Remote MCP)\n\n```json\n\"figma\": {\n  \"type\": \"http\",\n  \"url\": \"https://mcp.figma.com/mcp\"\n}\n```\n\n또는 플러그인으로 추가 (권장):\n```bash\nclaude plugin install figma@claude-plugins-official\n```\n\n## 주의사항\n- Figma 계정 OAuth 브라우저 인증 필요 (최초 1회)\n- 현재 베타 무료 — 향후 사용량 기반 유료 전환 예정\n- Starter 플랜: 월 6회 tool call 제한 / Professional 이상: rate limit 적용\n- Gemini CLI: 읽기 전용 지원"
+      "researched_at": "2026-04-19",
+      "content": "# Figma MCP\n\n## 소개\n\nFigma 공식 Remote MCP 서버.\nClaude가 Figma 디자인 파일에 직접 접근해 컴포넌트·변수·레이아웃 정보를 추출하고,\n선택 프레임을 React 코드로 변환하며, 캔버스를 프로그래밍 방식으로 편집할 수 있다.\n베타 기간 동안 무료 제공.\n\n## 주요 기능\n\n- 디자인 → 코드 변환 (React 컴포넌트)\n- 디자인 토큰·변수·스타일 추출\n- 캔버스 편집 (레이어·속성 조작)\n- 선택 프레임 컨텍스트 Claude에 전달\n\n## 사용법\n\n1. Figma 계정 OAuth 브라우저 인증 (최초 1회).\n2. 설정 파일에 Remote MCP URL 등록.\n3. 또는 공식 플러그인 방식: `claude plugin install figma@claude-plugins-official`.\n\n## 기타\n\n- 현재 베타 무료. 향후 사용량 기반 유료 전환 예정.\n- Starter 플랜: 월 6회 tool call 제한. Professional 이상은 rate limit 적용.\n- 원격 HTTP MCP이므로 네트워크 단절 환경에서는 사용 불가.\n\n## Claude CLI 설정\n\n```json\n\"figma\": {\n  \"type\": \"http\",\n  \"url\": \"https://mcp.figma.com/mcp\"\n}\n```\n\n## Claude Desktop 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"figma\": {\n      \"type\": \"http\",\n      \"url\": \"https://mcp.figma.com/mcp\"\n    }\n  }\n}\n```"
     },
     {
       "name": "stitch",
       "display_name": "Google Stitch MCP",
       "category": "UI & 디자인",
-      "status": "verified",
-      "api_key": "none",
       "operation_type": "generation",
+      "api_key": "none",
       "website": "https://stitch.withgoogle.com",
       "github": "https://github.com/davideast/stitch-mcp",
       "description": "텍스트 프롬프트·URL로 멀티스크린 UI 프로토타입 자동 생성 — Stitch→Claude Code 파이프라인",
@@ -624,16 +744,17 @@
         "claude-cli",
         "claude-desktop"
       ],
-      "content": "# Google Stitch MCP\n\n## 소개\n텍스트 프롬프트 또는 URL로 멀티스크린 UI 프로토타입·디자인 시스템 자동 생성.\nMCP를 통해 Claude Code와 연동 — Stitch(디자인) → Claude Code(구현) 파이프라인.\n\n## 적합한 프로젝트\n- 프론트엔드 UI/UX 프로토타이핑 필요 프로젝트\n- 디자인 → 코드 자동화 워크플로우\n- React 컴포넌트 변환이 필요한 프로젝트\n\n## API 키\n**Google 계정 필요** (OAuth 인증) — 별도 유료 API 키 없음  \n현재 완전 무료 (Google Labs 실험 단계, 2026-04-18 기준)  \n- Standard 모드: 월 350회 생성  \n- Experimental 모드: 월 200회 생성\n\n## 인증 초기화 (최초 1회)\n```bash\nnpx @_davideast/stitch-mcp init\n```\n실행 시 gcloud OAuth 브라우저 인증 자동 처리.\n\n## 현재 검증 버전\n`@_davideast/stitch-mcp` (npx 최신)\n\n## Claude CLI 설정\n\n```json\n\"stitch\": {\n  \"type\": \"stdio\",\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"@_davideast/stitch-mcp\",\n    \"proxy\"\n  ],\n  \"env\": {}\n}\n```\n\n> `cmd /c npx` 패턴: Windows 환경에서 `npx` 직접 호출 시 오류 발생하므로\n> 이 라이브러리의 모든 MCP 파일이 공통으로 사용하는 래퍼 방식.\n>\n> Google 계정 OAuth 인증 완료 상태여야 동작.\n> API 키 방식 사용 시 `\"STITCH_API_KEY\": \"YOUR_KEY\"` 를 env에 추가.\n\n## 사용 흐름\n\n```\n1. Stitch (stitch.withgoogle.com) 에서 UI 디자인 생성\n2. DESIGN.md 로 디자인 시스템 내보내기\n3. Claude Code가 MCP를 통해 Stitch 디자인 수신\n4. Claude Code → React 컴포넌트 변환 + 백엔드 연결\n```\n\n## 주의사항\n- 최초 실행 전 `npx @_davideast/stitch-mcp init` 으로 Google OAuth 인증 필수\n- Google Labs 실험 단계 — 향후 유료화 예정 (Q4 2026 예상, 미확인)\n- Claude Design과 역할 구분: Stitch = UI/UX 프로토타입 전문, Claude Design = 범용 시각 콘텐츠\n\n## 참조\n- 공식 사이트: https://stitch.withgoogle.com\n- MCP GitHub: https://github.com/davideast/stitch-mcp\n\n## 업데이트 이력\n- 초기 등록: 2026-04-18"
+      "researched_at": "2026-04-19",
+      "content": "# Google Stitch MCP\n\n## 소개\n\nGoogle Labs의 Stitch(`stitch.withgoogle.com`)를 MCP로 연결하는 서버.\n텍스트 프롬프트나 참고 URL만으로 멀티스크린 UI 프로토타입·디자인 시스템을 자동 생성하고,\n결과물을 Claude Code가 직접 수신해 React 컴포넌트로 변환하는 파이프라인을 구성한다.\n\n## 주요 기능\n\n- 프롬프트·URL 기반 UI 프로토타입 생성\n- 멀티스크린 레이아웃·디자인 시스템 내보내기 (DESIGN.md)\n- Claude Code ↔ Stitch 디자인 데이터 양방향 전달\n- React 컴포넌트 변환 보조\n\n## 사용법\n\n1. 최초 1회 OAuth 인증: `npx @_davideast/stitch-mcp init` → Google 계정 브라우저 인증.\n2. Stitch(`stitch.withgoogle.com`)에서 UI 디자인 생성 → DESIGN.md 내보내기.\n3. Claude가 MCP를 통해 디자인 수신 → React 컴포넌트·백엔드 연결 코드 생성.\n4. API 키 방식 사용 시 설정 env에 `STITCH_API_KEY: YOUR_KEY` 추가.\n\n## 기타\n\n- `cmd /c npx` 래퍼는 Windows 환경에서 `npx` 직접 호출 오류를 우회하기 위함.\n- Google Labs 실험 단계 — 향후 유료 전환 가능. 사용량 제한(Standard 월 350회 / Experimental 월 200회).\n- Claude Design(범용 시각 콘텐츠)과 역할 구분 — Stitch는 UI/UX 프로토타입 전문.\n\n## Claude CLI 설정\n\n```json\n\"stitch\": {\n  \"type\": \"stdio\",\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"@_davideast/stitch-mcp\",\n    \"proxy\"\n  ],\n  \"env\": {}\n}\n```\n\n## Claude Desktop 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"stitch\": {\n      \"command\": \"cmd\",\n      \"args\": [\n        \"/c\",\n        \"npx\",\n        \"-y\",\n        \"@_davideast/stitch-mcp\",\n        \"proxy\"\n      ]\n    }\n  }\n}\n```"
     },
     {
       "name": "magic-21st",
       "display_name": "Magic UI Copilot",
       "category": "UI & 디자인",
-      "status": "verified",
-      "api_key": "required",
       "operation_type": "generation",
+      "api_key": "required",
       "website": "https://21st.dev",
+      "docs": "https://21st.dev/docs",
       "api_docs": "https://21st.dev",
       "description": "AI 기반 React UI 컴포넌트 즉시 생성 — 프롬프트로 UI를 직접 만드는 UI Copilot",
       "features": [
@@ -645,16 +766,17 @@
         "claude-cli",
         "claude-desktop"
       ],
-      "content": "# magic-21st MCP (@21st-dev/magic)\n\n## 소개\n21st.dev Magic UI 생성 도구. AI 기반 UI 컴포넌트 자동 생성.\n프롬프트로 React 컴포넌트를 즉시 생성하는 \"UI Copilot\" 역할.\n\n## 적합한 프로젝트\n- 빠른 UI 프로토타이핑\n- React 프론트엔드 프로젝트\n- 디자인 시스템 구축 초기 단계\n\n## API 키\n**필요** — 21st.dev 계정에서 발급\n- 발급: https://21st.dev → 계정 설정 → API Keys\n\n## 현재 검증 버전\n`@21st-dev/magic@latest`\n\n## Claude CLI 설정\n\n```json\n\"magic\": {\n  \"command\": \"npx\",\n  \"args\": [\n    \"-y\",\n    \"@21st-dev/magic@latest\"\n  ],\n  \"env\": {\n    \"MAGIC_API_KEY\": \"YOUR_MAGIC_API_KEY\"\n  }\n}\n```\n\n## Windows 호환 설정\n\n```json\n\"magic\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"@21st-dev/magic@latest\"\n  ],\n  \"env\": {\n    \"MAGIC_API_KEY\": \"YOUR_MAGIC_API_KEY\"\n  }\n}\n```\n\n## 주의사항\n- shadcn MCP, magicui MCP와 함께 사용 시 UI 생성 커버리지 최대화\n- API 키 Git 노출 주의\n\n## 유사 MCP 비교\n\n| MCP | 특징 |\n|-----|------|\n| shadcn | shadcn/ui 컴포넌트 설치/조회 |\n| magicui | Magic UI 애니메이션 컴포넌트 |\n| magic (이 파일) | AI로 UI 컴포넌트 직접 생성 |\n\n## 업데이트 이력\n- 초기 등록: 2025-03-13"
+      "researched_at": "2026-04-19",
+      "content": "# magic-21st MCP\n\n## 소개\n\n21st.dev가 제공하는 Magic UI 생성 도구의 MCP 서버(`@21st-dev/magic`).\n프롬프트 지시만으로 React UI 컴포넌트를 즉시 생성하는 \"UI Copilot\" 역할.\n빠른 UI 프로토타이핑, 디자인 시스템 초기 구축 단계에 특히 유용.\n\n## 주요 기능\n\n- 프롬프트 → React 컴포넌트 코드 직접 생성\n- 기존 컴포넌트 개선·변형\n- 스타일·구성·동작을 자연어로 조절\n\n## 사용법\n\n1. 21st.dev 계정 설정에서 API Key 발급.\n2. 설정 env `MAGIC_API_KEY`에 기입.\n3. \"로그인 폼 컴포넌트 만들어줘\" 같은 프롬프트로 호출.\n\n## 기타\n\n- shadcn MCP(조립)·magicui MCP(애니메이션 조회)와 함께 사용 시 생성·조립·문서 참조 커버리지가 최대.\n- API 키 Git 노출 주의.\n\n## Claude CLI 설정\n\n```json\n\"magic\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"@21st-dev/magic\"\n  ],\n  \"env\": {\n    \"MAGIC_API_KEY\": \"YOUR_MAGIC_API_KEY\"\n  }\n}\n```\n\n## Claude Desktop 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"magic\": {\n      \"command\": \"cmd\",\n      \"args\": [\n        \"/c\",\n        \"npx\",\n        \"-y\",\n        \"@21st-dev/magic\"\n      ],\n      \"env\": {\n        \"MAGIC_API_KEY\": \"YOUR_MAGIC_API_KEY\"\n      }\n    }\n  }\n}\n```"
     },
     {
       "name": "magicui",
       "display_name": "Magic UI MCP",
       "category": "UI & 디자인",
-      "status": "verified",
-      "api_key": "none",
       "operation_type": "docs",
+      "api_key": "none",
       "website": "https://magicui.design",
+      "docs": "https://github.com/magicuidesign/mcp#readme",
       "github": "https://github.com/magicuidesign/mcp",
       "description": "Magic UI 애니메이션·인터랙티브 컴포넌트 조회 및 설치 자동화",
       "features": [
@@ -666,16 +788,17 @@
         "claude-cli",
         "claude-desktop"
       ],
-      "content": "# magicui MCP\n\n## 소개\nMagic UI 컴포넌트 라이브러리 연동. 애니메이션, 인터랙티브 UI 컴포넌트 조회 및 설치 자동화.\n\n## 적합한 프로젝트\n- Magic UI 기반 프론트엔드 프로젝트\n- 고품질 UI 애니메이션이 필요한 프로젝트\n- shadcn/ui와 병행 사용 가능\n\n## API 키\n불필요\n\n## 현재 검증 버전\n`@magicuidesign/mcp@latest`\n\n## Claude CLI 설정\n\n```json\n\"@magicuidesign/mcp\": {\n  \"command\": \"npx\",\n  \"args\": [\n    \"-y\",\n    \"@magicuidesign/mcp@latest\"\n  ]\n}\n```\n\n## Windows 호환 버전\n\n```json\n\"magicui\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"@magicuidesign/mcp@latest\"\n  ]\n}\n```\n\n## 주의사항\n- 비프론트엔드 프로젝트에 등록 불필요\n- shadcn MCP와 함께 사용 시 UI 컴포넌트 선택 범위 확대\n\n## 업데이트 이력\n- 초기 등록: 2025-03-13"
+      "researched_at": "2026-04-19",
+      "content": "# magicui MCP\n\n## 소개\n\nMagic UI 컴포넌트 라이브러리를 MCP로 연결하는 서버.\n애니메이션·인터랙티브 UI 컴포넌트의 조회와 설치를 자동화하여\n고품질 모션이 필요한 프론트엔드 프로젝트의 UI 조립을 가속한다.\n\n## 주요 기능\n\n- Magic UI 컴포넌트 목록 조회\n- 애니메이션·인터랙티브 요소 문서 참조\n- 설치 명령 자동 실행\n\n## 사용법\n\n프론트엔드 프로젝트에만 로컬 등록 권장.\nshadcn MCP와 병행 사용 시 컴포넌트 선택 범위가 확대된다.\n\n## 기타\n\n- 비프론트엔드 프로젝트에 등록 시 컨텍스트 부하만 증가하므로 불필요.\n\n## Claude CLI 설정\n\n```json\n\"magicui\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"@magicuidesign/mcp\"\n  ]\n}\n```\n\n## Claude Desktop 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"magicui\": {\n      \"command\": \"cmd\",\n      \"args\": [\n        \"/c\",\n        \"npx\",\n        \"-y\",\n        \"@magicuidesign/mcp\"\n      ]\n    }\n  }\n}\n```"
     },
     {
       "name": "pixso",
       "display_name": "Pixso MCP",
       "category": "UI & 디자인",
-      "status": "unverified",
+      "operation_type": "collaboration",
       "api_key": "optional",
-      "operation_type": "integration",
       "website": "https://pixso.net",
+      "docs": "https://pixso.net/developer/en/mcp/introduction.html",
       "dashboard": "https://pixso.net",
       "api_docs": "https://pixso.net/developer/en/mcp/introduction.html",
       "description": "Figma 호환 무료 디자인 툴 Pixso의 MCP — 디자인에서 프론트엔드 코드·이미지 에셋 직접 추출",
@@ -689,16 +812,17 @@
         "claude-cli",
         "claude-desktop"
       ],
-      "content": "## 소개\n\nFigma 호환 무료 디자인 툴 Pixso의 MCP 서버. 로컬(데스크탑 앱 필요)과 원격(클라우드) 두 가지 방식을 지원합니다. .fig/.sketch/.xd 파일 임포트 호환.\n\n## Claude CLI 설정 — 로컬 MCP (Pixso 데스크탑 앱 필요)\n\n```json\n\"pixso-local\": {\n  \"type\": \"http\",\n  \"url\": \"http://127.0.0.1:3667/mcp\"\n}\n```\n\nPixso 데스크탑 앱 v2.2.0 이상 실행 후 연결됩니다.\n\n## Claude CLI 설정 — 원격 MCP (클라우드)\n\n```json\n\"pixso-remote\": {\n  \"type\": \"http\",\n  \"url\": \"https://pixso.net/api/mcp/mcp\",\n  \"headers\": {\n    \"Token\": \"YOUR_PIXSO_ACCESS_TOKEN\"\n  }\n}\n```\n\n## 주의사항\n- 로컬 MCP: Pixso 데스크탑 앱 v2.2.0 이상 실행 상태 필요\n- 원격 MCP: Pixso 계정에서 Personal Access Token 발급 필요 (User Center)\n- Pixso 무료 플랜 사용 가능\n- Access Token Git 노출 주의"
+      "researched_at": "2026-04-19",
+      "content": "# Pixso MCP\n\n## 소개\n\nFigma 호환 무료 디자인 툴 Pixso의 MCP 서버.\n`.fig`·`.sketch`·`.xd` 파일 임포트를 지원하므로 Figma 유료 플랜 대안으로 활용 가능.\n데스크탑 앱을 활용하는 로컬 방식과 클라우드 원격 방식 두 가지를 지원한다.\n\n## 주요 기능\n\n- 디자인 → 프론트엔드 코드 변환\n- 이미지 에셋 직접 추출\n- 로컬(데스크탑 앱) / 원격(클라우드) 이중 방식\n- Figma 파일 임포트 호환\n\n## 사용법\n\n**로컬 방식**: Pixso 데스크탑 앱 v2.2.0 이상을 실행하면 `127.0.0.1:3667`에서 MCP 노출. 설정에 해당 URL 등록.\n**원격 방식**: Pixso User Center에서 Personal Access Token 발급 후 헤더에 `Token` 키로 전달.\n\n## 기타\n\n- 로컬 방식은 데스크탑 앱이 실행 중이어야 동작.\n- 원격 방식은 Access Token Git 노출 주의.\n- Pixso 무료 플랜으로 사용 가능.\n\n## Claude CLI 설정\n\n로컬(데스크탑 앱 필요):\n\n```json\n\"pixso-local\": {\n  \"type\": \"http\",\n  \"url\": \"http://127.0.0.1:3667/mcp\"\n}\n```\n\n원격(클라우드):\n\n```json\n\"pixso-remote\": {\n  \"type\": \"http\",\n  \"url\": \"https://pixso.net/api/mcp/mcp\",\n  \"headers\": {\n    \"Token\": \"YOUR_PIXSO_ACCESS_TOKEN\"\n  }\n}\n```\n\n## Claude Desktop 설정\n\n로컬(데스크탑 앱 필요):\n\n```json\n{\n  \"mcpServers\": {\n    \"pixso-local\": {\n      \"type\": \"http\",\n      \"url\": \"http://127.0.0.1:3667/mcp\"\n    }\n  }\n}\n```\n\n원격(클라우드):\n\n```json\n{\n  \"mcpServers\": {\n    \"pixso-remote\": {\n      \"type\": \"http\",\n      \"url\": \"https://pixso.net/api/mcp/mcp\",\n      \"headers\": {\n        \"Token\": \"YOUR_PIXSO_ACCESS_TOKEN\"\n      }\n    }\n  }\n}\n```"
     },
     {
       "name": "shadcn",
       "display_name": "shadcn/ui MCP",
       "category": "UI & 디자인",
-      "status": "verified",
-      "api_key": "none",
       "operation_type": "docs",
+      "api_key": "none",
       "website": "https://ui.shadcn.com",
+      "docs": "https://ui.shadcn.com/docs",
       "github": "https://github.com/shadcn-ui/ui",
       "description": "shadcn/ui 컴포넌트 설치·조회·문서 참조 자동화 — React + Tailwind CSS 기반",
       "features": [
@@ -710,15 +834,15 @@
         "claude-cli",
         "claude-desktop"
       ],
-      "content": "# shadcn MCP\n\n## 소개\nshadcn/ui 컴포넌트 설치, 조회, 문서 참조 자동화.\nClaude가 직접 컴포넌트 목록 확인 및 설치 명령 실행 가능.\n\n## 적합한 프로젝트\n- shadcn/ui 기반 프론트엔드 프로젝트\n- React + Tailwind CSS 프로젝트\n- **전역 등록 비권장 — 프론트엔드 프로젝트 로컬에만 추가**\n\n## API 키\n불필요\n\n## 현재 검증 버전\n`shadcn@latest` — 버전 고정 시 shadcn 업데이트와 불일치 가능, latest 유지 권장\n\n## Claude CLI 설정\n\n```json\n\"shadcn\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"shadcn@latest\",\n    \"mcp\"\n  ]\n}\n```\n\n## 주의사항\n- 비프론트엔드 프로젝트에 등록 시 불필요한 컨텍스트 부하 발생\n- `@latest`로 인한 초기 로딩 지연 있을 수 있음\n\n## 업데이트 이력\n- 초기 등록: 2025-03-13"
+      "researched_at": "2026-04-19",
+      "content": "# shadcn MCP\n\n## 소개\n\nshadcn/ui 컴포넌트 라이브러리를 MCP로 연결하는 서버.\nAI가 컴포넌트 목록을 직접 조회하고 설치 명령을 실행할 수 있어\nReact + Tailwind CSS 기반 프론트엔드 작업의 UI 조립 속도를 높인다.\n\n## 주요 기능\n\n- shadcn/ui 컴포넌트 목록 조회\n- 컴포넌트 설치 명령 자동 실행\n- 컴포넌트별 사용 문서·코드 예시 제공\n\n## 사용법\n\nshadcn/ui 사용 프로젝트에만 로컬 등록 권장.\n프론트엔드가 아닌 프로젝트에 등록하면 불필요한 컨텍스트 부하 발생.\n호출 시 `shadcn add {컴포넌트명}` 형태 명령을 AI가 자동 실행한다.\n\n## 기타\n\n- `shadcn@latest` 사용 시 초기 로딩 지연 가능 — 문제 시 버전 고정 고려.\n\n## Claude CLI 설정\n\n```json\n\"shadcn\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"npx\",\n    \"-y\",\n    \"shadcn@latest\",\n    \"mcp\"\n  ]\n}\n```\n\n## Claude Desktop 설정\n\n```json\n{\n  \"mcpServers\": {\n    \"shadcn\": {\n      \"command\": \"cmd\",\n      \"args\": [\n        \"/c\",\n        \"npx\",\n        \"-y\",\n        \"shadcn@latest\",\n        \"mcp\"\n      ]\n    }\n  }\n}\n```"
     },
     {
       "name": "cursor-talk-to-figma-mcp",
       "display_name": "Talk to Figma MCP",
       "category": "UI & 디자인",
-      "status": "unverified",
+      "operation_type": "collaboration",
       "api_key": "none",
-      "operation_type": "integration",
       "website": "https://www.figma.com/community/plugin/1485687494525374295",
       "github": "https://github.com/grab/cursor-talk-to-figma-mcp",
       "description": "WebSocket 브릿지로 AI가 Figma 디자인을 읽고 프로그래밍 방식으로 수정 — 완전 무료 오픈소스",
@@ -731,7 +855,8 @@
       "supported_clients": [
         "claude-cli"
       ],
-      "content": "## 소개\n\nGrab(동남아 슈퍼앱) 오픈소스 커뮤니티 MCP. WebSocket 브릿지를 통해 Claude가 Figma 디자인 노드를 읽고, 텍스트·스타일을 수정하며, 컴포넌트를 관리할 수 있습니다. MIT 라이선스 무료.\n\n## Claude CLI 설정\n\n```json\n\"TalkToFigma\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"bunx\",\n    \"cursor-talk-to-figma-mcp@latest\"\n  ]\n}\n```\n\n## 초기 설정 (최초 1회)\n1. WebSocket 서버 실행: `bunx cursor-talk-to-figma-mcp socket`\n2. Figma Community 플러그인 설치: https://www.figma.com/community/plugin/1485687494525374295\n\n## 주의사항\n- `bun` 패키지 매니저 설치 필요: https://bun.sh\n- WebSocket 서버와 Figma 플러그인을 동시에 실행해야 함\n- Figma 계정 로그인 필요 (별도 API 키 불필요)\n- 공식 Figma MCP와 달리 무료이나 Figma API 공식 지원은 아님"
+      "researched_at": "2026-04-19",
+      "content": "# Talk to Figma MCP\n\n## 소개\n\nGrab(동남아 슈퍼앱)이 공개한 오픈소스 커뮤니티 MCP.\nWebSocket 브릿지를 통해 AI가 Figma 디자인 노드를 직접 읽고 텍스트·스타일을 수정하며 컴포넌트를 관리한다.\nMIT 라이선스 완전 무료 — 공식 Figma MCP의 무료 대안으로 활용 가능.\n\n## 주요 기능\n\n- Figma 디자인 노드 조회\n- 텍스트·스타일·레이아웃 프로그래밍 방식 수정\n- 컴포넌트 관리 및 일괄 작업\n- WebSocket 기반 실시간 연동\n\n## 사용법\n\n1. `bun` 패키지 매니저 설치 (`https://bun.sh`).\n2. WebSocket 서버 실행: `bunx cursor-talk-to-figma-mcp socket`.\n3. Figma Community 플러그인 설치: `https://www.figma.com/community/plugin/1485687494525374295`.\n4. Figma 계정 로그인 상태에서 플러그인 실행 → AI 호출 가능.\n\n## 기타\n\n- WebSocket 서버와 Figma 플러그인이 동시에 실행되어야 동작.\n- Figma 공식 API 지원이 아닌 커뮤니티 구현이므로 Figma 업데이트에 따라 호환성이 변동될 수 있다.\n\n## Claude CLI 설정\n\n```json\n\"TalkToFigma\": {\n  \"command\": \"cmd\",\n  \"args\": [\n    \"/c\",\n    \"bunx\",\n    \"cursor-talk-to-figma-mcp\"\n  ]\n}\n```"
     }
   ]
 }
